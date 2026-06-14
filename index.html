@@ -31,11 +31,40 @@
         <input type="text" id="login-id" placeholder="Escribe tu Identificador">
         <button id="btn-iniciar">Entrar a la aplicación</button>
         <button class="btn-secundario" onclick="window.location.href='registro.html'">Crear una cuenta nueva</button>
+        
+        <span class="enlace-recuperar" id="link-olvido">¿Has olvidado tu identificador? ¡No pasa nada! Pincha aquí y te ayudamos a recuperarlo.</span>
+    </div>
+
+    <div id="modal-recuperar" class="modal oculto">
+        <div class="modal-contenido">
+            <span id="btn-cerrar-recuperar" class="cruz-cerrar">&times;</span>
+
+            <div id="recuperar-paso-1">
+                <h1 style="font-size: 1.6rem;">Recuperar Identificador</h1>
+                <p>Por favor, introduce tus datos para buscarte:</p>
+                <input type="text" id="rec-nombre" placeholder="Nombre">
+                <input type="text" id="rec-apellidos" placeholder="Apellidos">
+                <label for="rec-fecha" style="font-size: 1.1rem;">Fecha de nacimiento:</label>
+                <input type="date" id="rec-fecha">
+                
+                <button id="btn-recuperar-siguiente">Buscar en el sistema</button>
+            </div>
+
+            <div id="recuperar-paso-2" class="oculto">
+                <h1 style="font-size: 1.6rem; color: var(--verde-agua);">¡Te hemos encontrado!</h1>
+                <p>Este es el Identificador que tienes asociado:</p>
+                
+                <div id="caja-id-mostrado" class="caja-id-resaltado"></div>
+                
+                <button id="btn-copiar-id">Copiar Identificador</button>
+            </div>
+
+        </div>
     </div>
 
     <div id="modal-aviso" class="modal oculto">
         <div class="modal-contenido">
-            <p id="texto-modal" style="font-size: 1.4rem; margin-bottom: 20px;"></p>
+            <p id="texto-modal" style="font-size: 1.4rem; margin-bottom: 20px; text-align: left;"></p>
             <div id="modal-botones-confirmar" class="fila-botones oculto">
                 <button id="btn-confirmar-si">Sí, son correctos</button>
                 <button id="btn-confirmar-no" class="btn-gris">Modificar datos</button>
