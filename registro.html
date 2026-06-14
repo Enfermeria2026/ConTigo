@@ -10,23 +10,33 @@
 
     <div class="pantalla-contenedor">
         <img src="logo_contigo.png" class="logo" alt="Logo ConTigo">
-        <h1>Registro</h1>
+        <h1>Crear Cuenta</h1>
+        
         <input type="text" id="reg-nombre" placeholder="Nombre">
         <input type="text" id="reg-apellidos" placeholder="Apellidos">
-        <input type="date" id="reg-fecha" title="Fecha de nacimiento">
         
-        <div class="advertencia">
-            <strong>⚠️ Importante:</strong> El identificador es tu clave. Anótalo donde puedas recordarlo o díselo a alguien de confianza (ej. nombre de tu mascota, ciudad de nacimiento...).
-        </div>
+        <label for="reg-fecha">Tu fecha de nacimiento:</label>
+        <input type="date" id="reg-fecha">
         
         <input type="text" id="reg-id" placeholder="Crea tu Identificador">
-        <button id="btn-registrar">Registrarme</button>
-        <button class="btn-secundario" onclick="window.location.href='index.html'">Volver</button>
+        
+        <div class="advertencia">
+            <strong>⚠️ Consejo útil:</strong> El identificador es tu clave para entrar. Anótalo donde puedas recordarlo o díselo a alguien de confianza. Te sugerimos utilizar una clave fácil de recordar, como el  nombre de tu mascota, ciudad de nacimiento o el nombre de un familiar.
+        </div>
+        
+        <div class="fila-botones">
+            <button id="btn-registrar">Registrarse</button>
+            <button class="btn-secundario" onclick="window.location.href='index.html?nocarga=true'">Volver</button>
+        </div>
     </div>
 
     <div id="modal-aviso" class="modal oculto">
         <div class="modal-contenido">
-            <p id="texto-modal" style="font-size: 1.5rem;"></p>
+            <p id="texto-modal" style="font-size: 1.4rem; margin-bottom: 20px; text-align: left;"></p>
+            <div id="modal-botones-confirmar" class="fila-botones oculto">
+                <button id="btn-confirmar-si">Sí, son correctos</button>
+                <button id="btn-confirmar-no" class="btn-gris">Modificar datos</button>
+            </div>
             <button id="btn-cerrar-modal">Aceptar</button>
         </div>
     </div>
