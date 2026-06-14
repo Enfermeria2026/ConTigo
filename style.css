@@ -1,3 +1,5 @@
+/* style.css */
+
 :root {
     --azul-marino: #002B5B;
     --verde-agua: #14B8A6;
@@ -5,12 +7,18 @@
     --fondo: #FFFFFF;
 }
 
+/* Esta regla es vital para que el padding no genere scroll extra */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    padding: 10px; 
+    /* 4vh de espacio arriba, 15px a los lados. Evita el scroll innecesario */
+    padding: 4vh 15px 15px 15px; 
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* <-- CLAVE: Sube todos los elementos hacia la parte superior */
     min-height: 100vh;
     font-family: sans-serif;
     background-color: var(--fondo);
@@ -22,13 +30,12 @@ body {
     width: 100%;
     max-width: 480px;
     text-align: center;
-    box-sizing: border-box;
 }
 
-/* Logos */
-.logo { width: 180px; margin-bottom: 5px; }
+/* Logos: Un poco más pegados al título */
+.logo { width: 170px; margin-bottom: 0px; }
 
-/* Pantalla de Carga */
+/* --- Pantalla de Carga --- */
 #pantalla-carga {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -36,7 +43,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Aquí sí centramos todo al medio */
     z-index: 1000;
 }
 
@@ -53,7 +60,6 @@ body {
 h1.texto-siempre { font-size: 2.6rem; color: var(--verde-agua); margin: 5px 0; }
 .subtitulo { font-size: 1.2rem; color: var(--azul-marino); margin-bottom: 25px; }
 
-/* Puntos de Carga */
 .puntos-carga { display: flex; justify-content: center; gap: 12px; }
 .punto {
     width: 16px; height: 16px;
@@ -68,53 +74,52 @@ h1.texto-siempre { font-size: 2.6rem; color: var(--verde-agua); margin: 5px 0; }
     0%, 80%, 100% { transform: scale(0); }
     40% { transform: scale(1); }
 }
+/* --- Fin Pantalla de Carga --- */
 
-h1 { font-size: 2rem; color: var(--azul-marino); margin: 10px 0; }
-label { display: block; text-align: left; font-size: 1.3rem; font-weight: bold; margin-top: 10px; }
+h1 { font-size: 1.9rem; color: var(--azul-marino); margin: 5px 0 15px 0; }
+label { display: block; text-align: left; font-size: 1.2rem; font-weight: bold; margin-top: 5px; margin-bottom: 2px; }
 
-/* Inputs estándar */
+/* Inputs optimizados */
 input {
     width: 100%;
-    padding: 18px; 
-    margin: 8px 0;
-    font-size: 1.4rem;
+    padding: 15px; /* Reducido de 18 a 15 para ganar espacio vertical */
+    margin: 6px 0;
+    font-size: 1.3rem;
     border: 3px solid #ccc;
-    border-radius: 15px;
-    box-sizing: border-box;
+    border-radius: 12px;
 }
 
-/* NUEVO: Fila para agrupar inputs (Nombre y Apellidos) */
+/* Fila para Nombre y Apellidos */
 .fila-inputs {
     display: flex;
     gap: 10px;
     width: 100%;
 }
 .fila-inputs input {
-    flex: 1; /* Hace que se dividan el espacio exactamente al 50% */
-    min-width: 0; /* Evita que el campo se salga de la pantalla en móviles muy estrechos */
+    flex: 1; 
+    min-width: 0; 
 }
 
-/* Botones */
+/* Botones optimizados */
 button {
     width: 100%;
-    padding: 18px;
-    margin-top: 15px;
-    font-size: 1.5rem;
+    padding: 16px; /* Reducido de 18 a 16 */
+    margin-top: 10px;
+    font-size: 1.4rem;
     background-color: var(--verde-agua);
     color: white;
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
 }
 
-/* Distribución en fila para los Botones */
 .fila-botones {
     display: flex;
     gap: 15px;
     margin-top: 5px;
 }
-.fila-botones button { margin-top: 10px; }
+.fila-botones button { margin-top: 5px; }
 
 .btn-secundario { background-color: var(--azul-marino); }
 .btn-gris { background-color: #7f8c8d; }
@@ -128,15 +133,15 @@ button {
 }
 
 .modal-contenido {
-    background-color: white; padding: 30px; border-radius: 20px;
+    background-color: white; padding: 25px; border-radius: 20px;
     width: 85%; max-width: 420px; text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .advertencia {
     background-color: #fff3cd; border: 2px solid var(--naranja);
-    padding: 15px; border-radius: 15px; font-size: 1.1rem;
-    text-align: left; margin: 10px 0; color: #664d03;
+    padding: 12px; border-radius: 12px; font-size: 1.05rem;
+    text-align: left; margin: 8px 0; color: #664d03;
 }
 
 .oculto { display: none !important; }
