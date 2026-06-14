@@ -22,14 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const hoy = new Date();
         const diaActual = hoy.getDate();
         const mesActual = hoy.getMonth() + 1; // Enero es 0
+        const anoActual = hoy.getFullYear(); // <-- NUEVO: Obtenemos el año actual
 
         const partes = usuario.fecha.split('-'); // Formato YYYY-MM-DD
+        const anoNacimiento = parseInt(partes[0], 10); // <-- NUEVO: Extraemos su año de nacimiento
         const mesNacimiento = parseInt(partes[1], 10);
         const diaNacimiento = parseInt(partes[2], 10);
 
         if (diaActual === diaNacimiento && mesActual === mesNacimiento) {
-            // ¡Es su cumpleaños! Lanzamos felicitación
-            mostrarFelicitacion(usuario.nombre);
+            // Calculamos la edad exacta
+            const edad = anoActual - anoNacimiento;
+            // ¡Es su cumpleaños! Lanzamos felicitación pasándole la edad
+            mostrarFelicitacion(usuario.nombre, edad);
         }
     }
 
