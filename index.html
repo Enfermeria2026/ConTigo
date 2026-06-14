@@ -1,37 +1,25 @@
+// Pantalla de carga y login
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ConTigo - Inicio</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<head><meta charset="UTF-8"><link rel="stylesheet" href="style.css"></head>
 <body>
-
   <div id="pantalla-carga">
-    <img src="logo_contigo.png" alt="Logo ConTigo">
+    <img src="logo_contigo.png" alt="Logo" style="width: 200px;">
     <h2>siempre.</h2>
-    <p>Tecnología para todas las edades.</p>
-    </div>
-
-  <div id="pantalla-login" class="contenedor oculto">
-    <img src="logo_contigo.png" alt="Logo ConTigo" class="logo-pequeno">
-    <h1>Iniciar Sesión</h1>
-    
-    <input type="text" id="login-nombre" placeholder="Tu Nombre">
-    <input type="text" id="login-id" placeholder="Tu Identificador">
-    
-    <button id="btn-iniciar">Entrar</button>
-    <button id="btn-ir-registro" class="secundario" onclick="window.location.href='registro.html'">Crear cuenta nueva</button>
   </div>
-
+  <div id="pantalla-login" class="contenedor oculto">
+    <h1>Iniciar Sesión</h1>
+    <input type="text" id="login-nombre" placeholder="Nombre">
+    <input type="text" id="login-id" placeholder="Identificador">
+    <button id="btn-iniciar">Entrar</button>
+    <button class="secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
+  </div>
   <div id="modal-aviso" class="modal oculto">
     <div class="modal-contenido">
-      <p id="texto-modal">Mensaje de error o éxito</p>
+      <p id="texto-modal"></p>
       <button id="btn-cerrar-modal">Aceptar</button>
     </div>
   </div>
-
   <script type="module" src="app.js"></script>
 </body>
 </html>
