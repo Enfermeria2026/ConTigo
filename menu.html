@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConTigo - Menú Principal</title>
+    <link rel="stylesheet" href="menu.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <img src="logo_contigo.png" class="logo-menu" alt="Logo ConTigo">
+        <p class="subtitulo">Tecnología para todas las edades.</p>
+        <h1 class="bienvenida" id="nombre-pantalla">Cargando usuario...</h1>
+    </header>
+
+    <div class="fila-superior">
+        <button class="btn-fav" id="btn-fav1">+ Añadir<br>Contacto</button>
+        <button class="btn-fav" id="btn-fav2">+ Añadir<br>Contacto</button>
+        <button class="btn-sos" id="btn-sos">
+            <img src="iconos/sos.png" alt="SOS">
+            <span>Emergencias</span>
+        </button>
+    </div>
+
+    <div class="cuadricula-principal">
+        <button class="btn-app" style="background-color: var(--pastel-azul);">
+            <img src="iconos/tiempo.png" alt="El tiempo"> <span>El tiempo</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-verde);">
+            <img src="iconos/prensa.png" alt="Prensa"> <span>Prensa</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-amarillo);">
+            <img src="iconos/stickers.png" alt="Stickers"> <span>Stickers</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-morado);">
+            <img src="iconos/contactos.png" alt="Contactos"> <span>Contactos</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-naranja);">
+            <img src="iconos/calendario.png" alt="Calendario"> <span>Calendario</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-azul);">
+            <img src="iconos/recordatorios.png" alt="Recordatorios"> <span>Recordatorios</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-rojo);">
+            <img src="iconos/salud.png" alt="Salud"> <span>Salud</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-morado);">
+            <img src="iconos/eventos.png" alt="Eventos"> <span>Eventos cerca de ti</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-verde);">
+            <img src="iconos/compra.png" alt="Lista"> <span>Lista de la compra</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-marron);">
+            <img src="iconos/viajes.png" alt="Viajes"> <span>Viajes</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-rojo);">
+            <img src="iconos/videos.png" alt="Vídeos"> <span>Vídeos</span>
+        </button>
+        <button class="btn-app" style="background-color: var(--pastel-rosa);">
+            <img src="iconos/calculadora.png" alt="Calculadora"> <span>Calculadora</span>
+        </button>
+    </div>
+
+    <div class="separador-servicios">
+        <div class="linea-verde"></div>
+        <span class="texto-servicios">Servicios locales</span>
+        <div class="linea-verde"></div>
+    </div>
+
+    <div class="fila-servicios">
+        <button class="btn-servicio" style="background-color: var(--pastel-verde);">
+            <img src="iconos/telefonos.png" alt="Teléfonos"> <span>Teléfonos útiles</span>
+        </button>
+        <button class="btn-servicio" style="background-color: var(--pastel-amarillo);">
+            <img src="iconos/farmacia.png" alt="Farmacia"> <span>Farmacia de guardia</span>
+        </button>
+        <button class="btn-servicio" style="background-color: var(--pastel-azul);">
+            <img src="iconos/transporte.png" alt="Transporte"> <span>Transporte local</span>
+        </button>
+        <button class="btn-servicio" style="background-color: var(--pastel-verde);">
+            <img src="iconos/whatsapp.png" alt="WhatsApp"> <span>Whatsapp</span>
+        </button>
+    </div>
+
+    <footer>
+        <div class="texto-footer"><span class="marca-verde">ConTigo</span>, siempre</div>
+        <button class="btn-salir" id="btn-salir">Salir</button>
+    </footer>
+
+    <div id="modal-cumple" class="modal-cumple oculto">
+        <div class="contenido-cumple">
+            <h1>¡Feliz Cumpleaños! 🎉🎂</h1>
+            <p id="texto-cumple"></p>
+            <button class="btn-gracias" id="btn-cerrar-cumple">¡Muchas Gracias!</button>
+        </div>
+    </div>
+
+    <script type="module" src="menu.js"></script>
+</body>
+</html>
