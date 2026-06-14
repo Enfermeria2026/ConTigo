@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyApIiwYA_uSsiEGkD7N7CZUCQkScPsmrZU",
@@ -94,6 +94,9 @@ if (btnConfirmarSi) {
 
 async function guardarUsuarioEnBaseDeDatos(datos) {
     try {
+        // Añadimos la fecha y hora exacta del servidor en este momento
+        datos.fecha_registro_sistema = Timestamp.now();
+
         await addDoc(collection(db, "usuarios"), datos);
         datosTemporalesRegistro = null;
         esHomonimoConfirmado = false;
@@ -141,27 +144,28 @@ if (btnRecSiguiente) {
 
         console.log("Buscando en Firebase con estos datos exactos:", { nombre: n, apellidos: a, fecha: String(f) });
 
-        try {
-            // Buscamos forzando a que la fecha se compare estrictamente como texto
+       try {
             const q = query(collection(db, "usuarios"), 
                 where("nombre", "==", n), 
                 where("apellidos", "==", a), 
-                where("fecha", "==", String(f))
+                where("fecha_nacimiento", "==", String(f))
             );
             const consulta = await getDocs(q);
 
-            console.log("¿Se han encontrado cuentas coincidiendo?", !consulta.empty);
-
             if (consulta.empty) {
                 mostrarAviso("No encontramos ninguna cuenta con esos datos. Revísalos bien.");
+            } else if (consulta.size >= 2) {
+                // Hay dos o más personas con los mismos datos
+                if (modalRecuperar) modalRecuperar.classList.add('oculto'); // Cierra el recuadro de recuperar
+                mostrarAviso("Hemos detectado dos cuentas con los mismos datos personales, por favor, póngase en contacto con nuestro equipo de soporte a la siguiente dirección: soporte@conTigo.com");
             } else {
+                // Solo hay una persona, le mostramos su ID
                 const datosUsuario = consulta.docs[0].data();
                 if (cajaIdMostrado) cajaIdMostrado.innerText = datosUsuario.identificador;
                 if (paso1Rec) paso1Rec.classList.add('oculto');
                 if (paso2Rec) paso2Rec.classList.remove('oculto');
             }
         } catch (error) { 
-            console.error("Error al recuperar:", error);
             mostrarAviso("Error de conexión."); 
         }
     });
