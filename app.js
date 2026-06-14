@@ -186,7 +186,7 @@ if (btnRegistrar) {
             const consultaId = await getDocs(qIdentificador);
             
             if (!consultaId.empty) {
-                return mostrarAviso("Ese Identificador ya está siendo usado por otra persona con el nombre '" + nombre + "'. Por favor, cambia tu Identificador.");
+                return mostrarAviso("Ese Identificador ya está siendo usado por otra persona. Por favor, cambia tu Identificador.");
             }
 
             if (!esHomonimoConfirmado) {
