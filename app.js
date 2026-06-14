@@ -110,7 +110,7 @@ if (btnRegistrar) {
             const consulta = await getDocs(q);
             
             if (!consulta.empty) {
-                mostrarAviso("Ese Identificador ya está siendo usado por otra persona con el nombre '" + nombre + "'. Por favor, cambia tu Identificador.");
+                mostrarAviso("Ese Identificador ya está siendo usado por otra persona. Por favor, cambia tu Identificador.");
             } else {
                 // Almacenar temporalmente los datos y pedir confirmación visual
                 datosTemporalesRegistro = { nombre, apellidos, fecha, identificador: id };
