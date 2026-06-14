@@ -86,7 +86,7 @@ window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.style.display = 'none';
                 login.classList.remove('oculto');
-            }, 1200);
+            }, 800);
         }
     }
 });
