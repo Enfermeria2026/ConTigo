@@ -1,8 +1,6 @@
-// 1. IMPORTACIONES DE FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 2. CONFIGURACIÓN
 const firebaseConfig = {
   apiKey: "AIzaSyApIiwYA_uSsiEGkD7N7CZUCQkScPsmrZU",
   authDomain: "contigo-96ced.firebaseapp.com",
@@ -15,7 +13,7 @@ const firebaseConfig = {
 
 const db = getFirestore(initializeApp(firebaseConfig));
 
-// 3. LÓGICA DE MODALES (Avisos)
+// --- Lógica de Modales ---
 const modal = document.getElementById('modal-aviso');
 const textoModal = document.getElementById('texto-modal');
 const btnCerrarModal = document.getElementById('btn-cerrar-modal');
@@ -30,92 +28,74 @@ function mostrarAviso(mensaje, redirigir = false) {
 if (btnCerrarModal) {
     btnCerrarModal.addEventListener('click', () => {
         modal.classList.add('oculto');
-        if (redireccionarAlCerrar) {
-            window.location.href = 'index.html';
-        }
+        if (redireccionarAlCerrar) window.location.href = 'index.html';
     });
 }
 
-// 4. LÓGICA DE PANTALLA DE CARGA
+// --- Lógica de Carga ---
 window.addEventListener('load', () => {
     const loader = document.getElementById('pantalla-carga');
     const login = document.getElementById('pantalla-login');
-    
-    if (loader) {
+    if (loader && login) {
+        // Se muestran los puntos y la animación durante 3 segundos
         setTimeout(() => {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.classList.add('oculto');
-                if (login) login.classList.remove('oculto');
-            }, 500);
-        }, 2500); // 2.5 segundos de carga
+            loader.classList.add('oculto');
+            login.classList.remove('oculto');
+        }, 3000);
     }
 });
 
-// 5. LÓGICA DE REGISTRO
+// --- Lógica de Registro ---
 const btnRegistrar = document.getElementById('btn-registrar');
 if (btnRegistrar) {
     btnRegistrar.addEventListener('click', async () => {
         const nombre = document.getElementById('reg-nombre').value.trim();
+        const id = document.getElementById('reg-id').value.trim();
         const apellidos = document.getElementById('reg-apellidos').value.trim();
         const fecha = document.getElementById('reg-fecha').value;
-        const id = document.getElementById('reg-id').value.trim();
 
-        if (!nombre || !apellidos || !fecha || !id) {
-            return mostrarAviso("Por favor, rellena todos los campos.");
+        if (!nombre || !id || !apellidos || !fecha) {
+            return mostrarAviso("Rellena todos los campos.");
         }
 
         try {
-            // Verificar si el usuario con ese Nombre y ese ID ya existe
-            const q = query(collection(db, "usuarios"), 
-                where("nombre", "==", nombre), 
-                where("identificador", "==", id));
-            
+            const q = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("identificador", "==", id));
             const consulta = await getDocs(q);
-
             if (!consulta.empty) {
-                mostrarAviso("Ya existe un usuario con ese nombre e identificador. Por favor, elige otro ID.");
+                mostrarAviso("Ya existe ese usuario con ese ID. Prueba otro Identificador.");
             } else {
-                await addDoc(collection(db, "usuarios"), {
-                    nombre: nombre,
-                    apellidos: apellidos,
-                    fecha_nacimiento: fecha,
-                    identificador: id
-                });
+                await addDoc(collection(db, "usuarios"), { nombre, apellidos, fecha, identificador: id });
                 mostrarAviso("¡Registro completado con éxito!", true);
             }
-        } catch (error) {
-            mostrarAviso("Hubo un error de conexión, intenta de nuevo.");
+        } catch (e) { 
+            mostrarAviso("Error al conectar con la base de datos."); 
+            console.error(e);
         }
     });
 }
 
-// 6. LÓGICA DE INICIO DE SESIÓN
+// --- Lógica de Login ---
 const btnIniciar = document.getElementById('btn-iniciar');
 if (btnIniciar) {
     btnIniciar.addEventListener('click', async () => {
         const nombre = document.getElementById('login-nombre').value.trim();
         const id = document.getElementById('login-id').value.trim();
-
+        
         if (!nombre || !id) {
-            return mostrarAviso("Introduce tu nombre e identificador.");
+            return mostrarAviso("Introduce tu nombre y tu Identificador.");
         }
-
+        
         try {
-            const q = query(collection(db, "usuarios"), 
-                where("nombre", "==", nombre), 
-                where("identificador", "==", id));
-            
+            const q = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("identificador", "==", id));
             const consulta = await getDocs(q);
-
             if (consulta.empty) {
-                mostrarAviso("No encontramos ese nombre o ese identificador. Revisa los datos.");
+                mostrarAviso("No encontramos ninguna cuenta con esos datos.");
             } else {
-                // Éxito: Aquí redirigiremos al menú principal en la siguiente fase
-                mostrarAviso("¡Bienvenido, " + nombre + "!");
+                mostrarAviso("¡Bienvenido/a, " + nombre + "!");
             }
-        } catch (error) {
-            mostrarAviso("Error de conexión.");
+        } catch (e) { 
+            mostrarAviso("Error de conexión."); 
+            console.error(e);
         }
     });
 }
