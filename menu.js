@@ -18,12 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCIÓN DE CUMPLEAÑOS ---
     // Verificamos si hoy es el cumple del usuario
-    if (usuario.fecha_nacimiento) {
+    if (usuario.fecha) {
         const hoy = new Date();
         const diaActual = hoy.getDate();
         const mesActual = hoy.getMonth() + 1; // Enero es 0
 
-        const partes = usuario.fecha_nacimiento.split('-'); // Formato YYYY-MM-DD
+        const partes = usuario.fecha.split('-'); // Formato YYYY-MM-DD
         const mesNacimiento = parseInt(partes[1], 10);
         const diaNacimiento = parseInt(partes[2], 10);
 
