@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><link rel="stylesheet" href="style.css"></head>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
-  <div id="pantalla-carga">
-    <img src="logo_contigo.png" alt="Logo" style="width: 200px;">
-    <h2>siempre.</h2>
-  </div>
-  <div id="pantalla-login" class="contenedor oculto">
-    <h1>Iniciar Sesión</h1>
-    <input type="text" id="login-nombre" placeholder="Nombre">
-    <input type="text" id="login-id" placeholder="Identificador">
-    <button id="btn-iniciar">Entrar</button>
-    <button class="secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
-  </div>
-  <div id="modal-aviso" class="modal oculto">
-    <div class="modal-contenido">
-      <p id="texto-modal"></p>
-      <button id="btn-cerrar-modal">Aceptar</button>
+
+    <div id="pantalla-carga">
+        <img src="logo_contigo.png" class="logo-grande" alt="ConTigo">
+        <h1 style="color: var(--verde-agua);">siempre.</h1>
+        <p class="subtitulo">Tecnología para todas las edades.</p>
+        <div class="loader">● ● ● ● ●</div> </div>
+
+    <div id="pantalla-login" class="pagina oculto">
+        <img src="logo_contigo.png" class="logo-pequeno" alt="Logo">
+        <h1>Iniciar Sesión</h1>
+        <input type="text" id="login-nombre" placeholder="Nombre">
+        <input type="text" id="login-id" placeholder="Identificador">
+        <button id="btn-iniciar">Entrar</button>
+        <button class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
     </div>
-  </div>
-  <script type="module" src="app.js"></script>
+
+    <script type="module" src="app.js"></script>
 </body>
 </html>
