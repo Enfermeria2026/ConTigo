@@ -116,7 +116,7 @@ if (btnRegistrar) {
                 datosTemporalesRegistro = { nombre, apellidos, fecha, identificador: id };
                 
                 const mensajeConfirmacion = `
-                    <strong>¿Son todos tus datos correctos?</strong><br><br>
+                    <strong>Compruebe que sus datos son correctos:</strong><br><br>
                     • <b>Nombre:</b> ${nombre}<br>
                     • <b>Apellidos:</b> ${apellidos}<br>
                     • <b>Identificador:</b> ${id}
