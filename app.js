@@ -201,46 +201,54 @@ if (btnRegistrar) {
 
         if (!nombre || !id || !apellidos || !fecha) return mostrarAviso("Por favor, rellena todos los campos antes de continuar.");
 
+        // Creamos las versiones ocultas sin mayúsculas ni tildes
+        const nombreLimpio = normalizarTexto(nombre);
+        const apellidosLimpios = normalizarTexto(apellidos);
+        const idLimpio = normalizarTexto(id);
+
         try {
-            // 1ª VALIDACIÓN: Comprobar si la combinación de NOMBRE + IDENTIFICADOR ya existe
-            const qIdentificador = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("identificador", "==", id));
+            const qIdentificador = query(collection(db, "usuarios"), 
+                where("nombre_normalizado", "==", nombreLimpio), 
+                where("identificador_normalizado", "==", idLimpio)
+            );
             const consultaId = await getDocs(qIdentificador);
             
             if (!consultaId.empty) {
-                return mostrarAviso("Ese Identificador ya está siendo usado por otra persona. Por favor, cambia tu Identificador.");
+                return mostrarAviso("Ese Identificador ya está siendo usado por otra persona con el nombre '" + nombre + "'. Por favor, cambia tu Identificador.");
             }
 
-            // 2ª VALIDACIÓN: Comprobar homónimos (Mismo Nombre, Apellidos y Fecha)
             if (!esHomonimoConfirmado) {
-                console.log("Verificando si existen homónimos en la BD con:", { nombre, apellidos, fecha: String(fecha) });
-                
                 const qHomonimo = query(collection(db, "usuarios"), 
-                    where("nombre", "==", nombre), 
-                    where("apellidos", "==", apellidos), 
-                    where("fecha", "==", String(fecha))
+                    where("nombre_normalizado", "==", nombreLimpio), 
+                    where("apellidos_normalizados", "==", apellidosLimpios), 
+                    where("fecha_nacimiento", "==", String(fecha))
                 );
                 const consultaHomonimo = await getDocs(qHomonimo);
 
-                console.log("¿Se encontró algún homónimo idéntico?", !consultaHomonimo.empty);
-
                 if (!consultaHomonimo.empty) {
-                    datosTemporalesRegistro = { nombre, apellidos, fecha: String(fecha), identificador: id, verificandoHomonimo: true };
+                    datosTemporalesRegistro = { 
+                        nombre, apellidos, fecha_nacimiento: String(fecha), identificador: id, 
+                        nombre_normalizado: nombreLimpio, apellidos_normalizados: apellidosLimpios, identificador_normalizado: idLimpio,
+                        verificandoHomonimo: true 
+                    };
                     const mensajeHomonimo = `<strong>⚠️ Cuenta similar encontrada</strong><br><br>Ya existe alguien registrado en el sistema con tu mismo nombre, apellidos y fecha de nacimiento.<br><br><b>¿Eres una persona diferente que se está registrando por primera vez?</b>`;
                     return mostrarAviso(mensajeHomonimo, false, true, "Sí, soy otra persona", "No, volver atrás");
                 }
             }
 
-            datosTemporalesRegistro = { nombre, apellidos, fecha: String(fecha), identificador: id };
-            const mensajeConfirmacion = `<strong>Compruebe que sus datos son correctos:</strong><br><br>• <b>Nombre:</b> ${nombre}<br>• <b>Apellidos:</b> ${apellidos}<br>• <b>Identificador:</b> ${id}`;
+            // Guardamos el nombre bonito para la pantalla, y el limpio para el sistema
+            datosTemporalesRegistro = { 
+                nombre, apellidos, fecha_nacimiento: String(fecha), identificador: id,
+                nombre_normalizado: nombreLimpio, apellidos_normalizados: apellidosLimpios, identificador_normalizado: idLimpio
+            };
+            const mensajeConfirmacion = `<strong>¿Son todos tus datos correctos?</strong><br><br>• <b>Nombre:</b> ${nombre}<br>• <b>Apellidos:</b> ${apellidos}<br>• <b>Identificador:</b> ${id}`;
             mostrarAviso(mensajeConfirmacion, false, true, "Sí, son correctos", "Modificar datos");
 
         } catch (e) { 
-            console.error("Error durante el registro:", e);
             mostrarAviso("Error al conectar con el sistema."); 
         }
     });
 }
-
 // --- Lógica de Login ---
 const btnIniciar = document.getElementById('btn-iniciar');
 if (btnIniciar) {
