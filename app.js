@@ -13,6 +13,12 @@ const firebaseConfig = {
 
 const db = getFirestore(initializeApp(firebaseConfig));
 
+// --- FUNCIÓN PARA LIMPIAR TEXTOS (Sin mayúsculas ni acentos) ---
+function normalizarTexto(texto) {
+    if (!texto) return "";
+    return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 // --- Lógica de Carga Inteligente ---
 const loader = document.getElementById('pantalla-carga');
 const login = document.getElementById('pantalla-login');
@@ -244,24 +250,26 @@ if (btnIniciar) {
         
         if (!nombre || !id) return mostrarAviso("Introduce tu nombre y tu Identificador.");
         
+        // Limpiamos los textos que ha escrito el usuario
+        const nombreLimpio = normalizarTexto(nombre);
+        const idLimpio = normalizarTexto(id);
+        
         try {
-            const q = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("identificador", "==", id));
+            // Buscamos usando las versiones limpias
+            const q = query(collection(db, "usuarios"), 
+                where("nombre_normalizado", "==", nombreLimpio), 
+                where("identificador_normalizado", "==", idLimpio)
+            );
             const consulta = await getDocs(q);
             
             if (consulta.empty) {
                 mostrarAviso("No encontramos ninguna cuenta con esos datos. Revisa si están bien escritos.");
             } else {
-                // --- ESTO ES LO NUEVO ---
-                // Extraemos los datos de la base de datos y los guardamos en la memoria del móvil
+                // Guardamos los datos bonitos originales en la memoria y vamos al menú
                 const datosUsuario = consulta.docs[0].data();
                 localStorage.setItem('usuarioContigo', JSON.stringify(datosUsuario));
-                
-                // Le decimos al programa que cambie a la pantalla del menú
                 window.location.href = 'menu.html';
             }
-            
-        } catch (e) { 
-            mostrarAviso("Error al verificar la cuenta."); 
-        }
+        } catch (e) { mostrarAviso("Error al verificar la cuenta."); }
     });
 }
