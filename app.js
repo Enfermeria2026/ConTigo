@@ -148,7 +148,7 @@ if (btnRecSiguiente) {
             const q = query(collection(db, "usuarios"), 
                 where("nombre", "==", n), 
                 where("apellidos", "==", a), 
-                where("fecha_nacimiento", "==", String(f))
+                where("fecha", "==", String(f))
             );
             const consulta = await getDocs(q);
 
@@ -225,7 +225,7 @@ if (btnRegistrar) {
             }
 
             datosTemporalesRegistro = { nombre, apellidos, fecha: String(fecha), identificador: id };
-            const mensajeConfirmacion = `<strong>¿Son todos tus datos correctos?</strong><br><br>• <b>Nombre:</b> ${nombre}<br>• <b>Apellidos:</b> ${apellidos}<br>• <b>Identificador:</b> ${id}`;
+            const mensajeConfirmacion = `<strong>Compruebe que sus datos son correctos:</strong><br><br>• <b>Nombre:</b> ${nombre}<br>• <b>Apellidos:</b> ${apellidos}<br>• <b>Identificador:</b> ${id}`;
             mostrarAviso(mensajeConfirmacion, false, true, "Sí, son correctos", "Modificar datos");
 
         } catch (e) { 
