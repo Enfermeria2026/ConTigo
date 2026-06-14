@@ -48,10 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Muestra el modal elegante y dispara el confeti
-function mostrarFelicitacion(nombre) {
+function mostrarFelicitacion(nombre, edad) {
     const modal = document.getElementById('modal-cumple');
     const texto = document.getElementById('texto-cumple');
     const btnCerrar = document.getElementById('btn-cerrar-cumple');
+
+    // <-- NUEVO: Cambiamos el título h1 para incluir los años
+    if (modal) {
+        const titulo = modal.querySelector('h1');
+        if (titulo) {
+            titulo.innerText = `¡Feliz ${edad} cumpleaños! 🎉🎂`;
+        }
+    }
 
     if (texto) {
         texto.innerHTML = `¡Todo el equipo de <b>ConTigo</b> te desea un feliz cumpleaños y que pases un día maravilloso, ${nombre}! 🥳🎂`;
@@ -68,7 +76,6 @@ function mostrarFelicitacion(nombre) {
         });
     }
 }
-
 // Configuración de la animación de confeti (Dura 4 segundos a los lados de la pantalla)
 function dispararAnimacionConfeti() {
     var duration = 4 * 1000;
