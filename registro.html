@@ -2,24 +2,33 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <title>ConTigo - Registro</title>
 </head>
 <body>
 
-    <div class="pagina">
-        <img src="logo_contigo.png" class="logo-pequeno" alt="Logo">
+    <div class="pantalla-contenedor">
+        <img src="logo_contigo.png" class="logo" alt="Logo ConTigo">
         <h1>Registro</h1>
         <input type="text" id="reg-nombre" placeholder="Nombre">
         <input type="text" id="reg-apellidos" placeholder="Apellidos">
-        <input type="date" id="reg-fecha">
+        <input type="date" id="reg-fecha" title="Fecha de nacimiento">
         
         <div class="advertencia">
-            <strong>⚠️ Importante:</strong> El identificador es tu clave. Anótalo donde puedas recordarlo.
+            <strong>⚠️ Importante:</strong> El identificador es tu clave. Anótalo donde puedas recordarlo o díselo a alguien de confianza (ej. nombre de tu mascota, ciudad de nacimiento...).
         </div>
         
         <input type="text" id="reg-id" placeholder="Crea tu Identificador">
         <button id="btn-registrar">Registrarme</button>
         <button class="btn-secundario" onclick="window.location.href='index.html'">Volver</button>
+    </div>
+
+    <div id="modal-aviso" class="modal oculto">
+        <div class="modal-contenido">
+            <p id="texto-modal" style="font-size: 1.5rem;"></p>
+            <button id="btn-cerrar-modal">Aceptar</button>
+        </div>
     </div>
 
     <script type="module" src="app.js"></script>
