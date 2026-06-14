@@ -10,16 +10,13 @@
 
     <div id="pantalla-carga">
         <img src="logo_contigo.png" class="logo" alt="Logo ConTigo">
-        
         <div class="separador">
             <div class="linea"></div>
             <div class="corazon">♥</div>
             <div class="linea"></div>
         </div>
-
         <h1 class="texto-siempre">siempre.</h1>
         <p class="subtitulo">Tecnología para todas las edades.</p>
-        
         <div class="puntos-carga">
             <div class="punto"></div>
             <div class="punto"></div>
@@ -30,15 +27,19 @@
     <div id="pantalla-login" class="pantalla-contenedor oculto">
         <img src="logo_contigo.png" class="logo" alt="Logo ConTigo">
         <h1>Iniciar Sesión</h1>
-        <input type="text" id="login-nombre" placeholder="Nombre">
-        <input type="text" id="login-id" placeholder="Identificador">
-        <button id="btn-iniciar">Entrar</button>
-        <button class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta nueva</button>
+        <input type="text" id="login-nombre" placeholder="Escribe tu Nombre">
+        <input type="text" id="login-id" placeholder="Escribe tu Identificador">
+        <button id="btn-iniciar">Entrar a la aplicación</button>
+        <button class="btn-secundario" onclick="window.location.href='registro.html'">Crear una cuenta nueva</button>
     </div>
 
     <div id="modal-aviso" class="modal oculto">
         <div class="modal-contenido">
-            <p id="texto-modal" style="font-size: 1.5rem;"></p>
+            <p id="texto-modal" style="font-size: 1.4rem; margin-bottom: 20px;"></p>
+            <div id="modal-botones-confirmar" class="fila-botones oculto">
+                <button id="btn-confirmar-si">Sí, son correctos</button>
+                <button id="btn-confirmar-no" class="btn-gris">Modificar datos</button>
+            </div>
             <button id="btn-cerrar-modal">Aceptar</button>
         </div>
     </div>
