@@ -1,51 +1,105 @@
-/* style.css */
 :root {
     --azul-marino: #002B5B;
     --verde-agua: #14B8A6;
-    --dorado: #D4AF37;
+    --naranja: #F5A623; /* Naranja/Dorado para líneas, corazón y puntos */
     --fondo: #FFFFFF;
 }
 
 body {
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: sans-serif;
     background-color: var(--fondo);
+    color: var(--azul-marino);
 }
 
-/* Contenedor universal para centrar todo */
-.pagina {
-    width: 90%;
+.pantalla-contenedor {
+    width: 100%;
     max-width: 500px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-/* Pantalla de carga */
+/* Logos */
+.logo { width: 220px; margin-bottom: 10px; }
+
+/* --- Pantalla de Carga Específica --- */
 #pantalla-carga {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: white;
+    background-color: var(--fondo);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 1000;
 }
 
-.logo-grande { width: 200px; margin-bottom: 20px; }
-.logo-pequeno { width: 150px; margin-bottom: 30px; }
+/* Separador: Línea - Corazón - Línea */
+.separador {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    max-width: 300px;
+    margin: 15px 0;
+}
 
-h1 { font-size: 2.5rem; color: var(--azul-marino); margin: 10px 0; }
-.subtitulo { font-size: 1.5rem; color: var(--azul-marino); margin-bottom: 30px; }
+.linea {
+    flex: 1;
+    height: 2px;
+    background-color: var(--naranja);
+}
 
-/* Inputs y Botones gigantes para accesibilidad */
+.corazon {
+    color: var(--naranja);
+    font-size: 1.5rem;
+    margin: 0 15px;
+}
+
+h1.texto-siempre { 
+    font-size: 3rem; 
+    color: var(--verde-agua); 
+    margin: 5px 0; 
+}
+
+.subtitulo { 
+    font-size: 1.3rem; 
+    color: var(--azul-marino); 
+    margin-bottom: 40px; 
+}
+
+/* Puntos de Carga Animados (Naranjas y Circulares) */
+.puntos-carga {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.punto {
+    width: 20px;
+    height: 20px;
+    background-color: var(--naranja);
+    border-radius: 50%;
+    animation: latido 1.4s infinite ease-in-out both;
+}
+
+.punto:nth-child(1) { animation-delay: -0.32s; }
+.punto:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes latido {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* --- Fin Pantalla de Carga --- */
+
+h1 { font-size: 2.2rem; color: var(--azul-marino); margin-bottom: 20px; }
+
+/* Inputs y botones gigantes */
 input {
     width: 100%;
     padding: 25px;
@@ -53,6 +107,7 @@ input {
     font-size: 1.5rem;
     border: 3px solid #ccc;
     border-radius: 15px;
+    box-sizing: border-box;
 }
 
 button {
@@ -65,18 +120,28 @@ button {
     border: none;
     border-radius: 15px;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.btn-secundario { background-color: var(--azul-marino); }
+.btn-secundario { background-color: var(--azul-marino); margin-top: 15px; }
+
+/* Modales */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000;
+}
+
+.modal-contenido {
+    background-color: white; padding: 40px; border-radius: 20px;
+    width: 80%; max-width: 400px; text-align: center;
+}
 
 .advertencia {
-    background-color: #fff3cd;
-    border: 2px solid var(--dorado);
-    padding: 20px;
-    border-radius: 15px;
-    font-size: 1.3rem;
-    text-align: left;
-    margin: 20px 0;
+    background-color: #fff3cd; border: 2px solid var(--naranja);
+    padding: 20px; border-radius: 15px; font-size: 1.3rem;
+    text-align: left; margin: 20px 0; color: #664d03;
 }
 
 .oculto { display: none !important; }
