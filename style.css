@@ -7,7 +7,7 @@
 
 body {
     margin: 0;
-    padding: 10px; /* Reducido para evitar scroll */
+    padding: 10px; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +15,7 @@ body {
     font-family: sans-serif;
     background-color: var(--fondo);
     color: var(--azul-marino);
-    overflow-y: auto; /* Permite scroll solo si la pantalla es extremadamente pequeña */
+    overflow-y: auto; 
 }
 
 .pantalla-contenedor {
@@ -72,10 +72,10 @@ h1.texto-siempre { font-size: 2.6rem; color: var(--verde-agua); margin: 5px 0; }
 h1 { font-size: 2rem; color: var(--azul-marino); margin: 10px 0; }
 label { display: block; text-align: left; font-size: 1.3rem; font-weight: bold; margin-top: 10px; }
 
-/* Inputs y botones optimizados */
+/* Inputs estándar */
 input {
     width: 100%;
-    padding: 18px; /* Ajustado para que quepa todo sin scroll */
+    padding: 18px; 
     margin: 8px 0;
     font-size: 1.4rem;
     border: 3px solid #ccc;
@@ -83,6 +83,18 @@ input {
     box-sizing: border-box;
 }
 
+/* NUEVO: Fila para agrupar inputs (Nombre y Apellidos) */
+.fila-inputs {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+.fila-inputs input {
+    flex: 1; /* Hace que se dividan el espacio exactamente al 50% */
+    min-width: 0; /* Evita que el campo se salga de la pantalla en móviles muy estrechos */
+}
+
+/* Botones */
 button {
     width: 100%;
     padding: 18px;
@@ -96,7 +108,7 @@ button {
     font-weight: bold;
 }
 
-/* Distribución en fila para el Registro */
+/* Distribución en fila para los Botones */
 .fila-botones {
     display: flex;
     gap: 15px;
