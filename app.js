@@ -13,7 +13,7 @@ const firebaseConfig = {
 
 const db = getFirestore(initializeApp(firebaseConfig));
 
-// --- Lógica de Carga Inteligente (A prueba de memoria caché) ---
+// --- Lógica de Carga Inteligente ---
 const loader = document.getElementById('pantalla-carga');
 const login = document.getElementById('pantalla-login');
 
@@ -43,7 +43,7 @@ let datosTemporalesRegistro = null;
 let esHomonimoConfirmado = false;
 
 function mostrarAviso(mensaje, redirigir = false, modoConfirmacion = false, textoBotonSi = "Sí, son correctos", textoBotonNo = "Modificar datos") {
-    if (!modal || !textoModal) return; // Seguridad extra
+    if (!modal || !textoModal) return; 
     
     textoModal.innerHTML = mensaje;
     redireccionarAlCerrar = redirigir;
@@ -60,7 +60,6 @@ function mostrarAviso(mensaje, redirigir = false, modoConfirmacion = false, text
     modal.classList.remove('oculto');
 }
 
-// Botones generales del modal de avisos
 if (btnCerrarModal) {
     btnCerrarModal.addEventListener('click', () => {
         modal.classList.add('oculto');
@@ -114,7 +113,6 @@ const cajaIdMostrado = document.getElementById('caja-id-mostrado');
 
 if (linkOlvido && modalRecuperar) {
     linkOlvido.addEventListener('click', () => {
-        // Limpiamos los campos al abrir
         const recN = document.getElementById('rec-nombre');
         const recA = document.getElementById('rec-apellidos');
         const recF = document.getElementById('rec-fecha');
@@ -137,13 +135,22 @@ if (btnRecSiguiente) {
     btnRecSiguiente.addEventListener('click', async () => {
         const n = document.getElementById('rec-nombre')?.value.trim();
         const a = document.getElementById('rec-apellidos')?.value.trim();
-        const f = document.getElementById('rec-fecha')?.value;
+        const f = document.getElementById('rec-fecha')?.value; // Formato de fecha del input
 
         if (!n || !a || !f) return mostrarAviso("Rellena nombre, apellidos y fecha para buscarte.");
 
+        console.log("Buscando en Firebase con estos datos exactos:", { nombre: n, apellidos: a, fecha_nacimiento: String(f) });
+
         try {
-            const q = query(collection(db, "usuarios"), where("nombre", "==", n), where("apellidos", "==", a), where("fecha_nacimiento", "==", f));
+            // Buscamos forzando a que la fecha se compare estrictamente como texto
+            const q = query(collection(db, "usuarios"), 
+                where("nombre", "==", n), 
+                where("apellidos", "==", a), 
+                where("fecha_nacimiento", "==", String(f))
+            );
             const consulta = await getDocs(q);
+
+            console.log("¿Se han encontrado cuentas coincidiendo?", !consulta.empty);
 
             if (consulta.empty) {
                 mostrarAviso("No encontramos ninguna cuenta con esos datos. Revísalos bien.");
@@ -153,7 +160,10 @@ if (btnRecSiguiente) {
                 if (paso1Rec) paso1Rec.classList.add('oculto');
                 if (paso2Rec) paso2Rec.classList.remove('oculto');
             }
-        } catch (error) { mostrarAviso("Error de conexión."); }
+        } catch (error) { 
+            console.error("Error al recuperar:", error);
+            mostrarAviso("Error de conexión."); 
+        }
     });
 }
 
@@ -182,6 +192,7 @@ if (btnRegistrar) {
         if (!nombre || !id || !apellidos || !fecha) return mostrarAviso("Por favor, rellena todos los campos antes de continuar.");
 
         try {
+            // 1ª VALIDACIÓN: Comprobar si la combinación de NOMBRE + IDENTIFICADOR ya existe
             const qIdentificador = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("identificador", "==", id));
             const consultaId = await getDocs(qIdentificador);
             
@@ -189,22 +200,32 @@ if (btnRegistrar) {
                 return mostrarAviso("Ese Identificador ya está siendo usado por otra persona. Por favor, cambia tu Identificador.");
             }
 
+            // 2ª VALIDACIÓN: Comprobar homónimos (Mismo Nombre, Apellidos y Fecha)
             if (!esHomonimoConfirmado) {
-                const qHomonimo = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("apellidos", "==", apellidos), where("fecha_nacimiento", "==", fecha));
+                console.log("Verificando si existen homónimos en la BD con:", { nombre, apellidos, fecha: String(fecha) });
+                
+                const qHomonimo = query(collection(db, "usuarios"), 
+                    where("nombre", "==", nombre), 
+                    where("apellidos", "==", apellidos), 
+                    where("fecha_nacimiento", "==", String(fecha))
+                );
                 const consultaHomonimo = await getDocs(qHomonimo);
 
+                console.log("¿Se encontró algún homónimo idéntico?", !consultaHomonimo.empty);
+
                 if (!consultaHomonimo.empty) {
-                    datosTemporalesRegistro = { nombre, apellidos, fecha, identificador: id, verificandoHomonimo: true };
+                    datosTemporalesRegistro = { nombre, apellidos, fecha: String(fecha), identificador: id, verificandoHomonimo: true };
                     const mensajeHomonimo = `<strong>⚠️ Cuenta similar encontrada</strong><br><br>Ya existe alguien registrado en el sistema con tu mismo nombre, apellidos y fecha de nacimiento.<br><br><b>¿Eres una persona diferente que se está registrando por primera vez?</b>`;
                     return mostrarAviso(mensajeHomonimo, false, true, "Sí, soy otra persona", "No, volver atrás");
                 }
             }
 
-            datosTemporalesRegistro = { nombre, apellidos, fecha, identificador: id };
+            datosTemporalesRegistro = { nombre, apellidos, fecha: String(fecha), identificador: id };
             const mensajeConfirmacion = `<strong>¿Son todos tus datos correctos?</strong><br><br>• <b>Nombre:</b> ${nombre}<br>• <b>Apellidos:</b> ${apellidos}<br>• <b>Identificador:</b> ${id}`;
             mostrarAviso(mensajeConfirmacion, false, true, "Sí, son correctos", "Modificar datos");
 
         } catch (e) { 
+            console.error("Error durante el registro:", e);
             mostrarAviso("Error al conectar con el sistema."); 
         }
     });
