@@ -111,7 +111,7 @@ button {
 }
 .oculto { display: none !important; }
 
-/* Centrar específicamente la pantalla de login */
+/* Altura manual de la pantalla de login */
 #pantalla-login {
-    margin: auto; /* Esto obliga a este contenedor a centrarse en la pantalla */
+    margin-top: 10vh; /* Ajusta este número a tu gusto */
 }
