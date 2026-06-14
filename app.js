@@ -247,8 +247,21 @@ if (btnIniciar) {
         try {
             const q = query(collection(db, "usuarios"), where("nombre", "==", nombre), where("identificador", "==", id));
             const consulta = await getDocs(q);
-            if (consulta.empty) mostrarAviso("No encontramos ninguna cuenta con esos datos. Revisa si están bien escritos.");
-            else mostrarAviso("¡Bienvenido/a de nuevo, " + nombre + "!");
-        } catch (e) { mostrarAviso("Error al verificar la cuenta."); }
+            
+            if (consulta.empty) {
+                mostrarAviso("No encontramos ninguna cuenta con esos datos. Revisa si están bien escritos.");
+            } else {
+                // --- ESTO ES LO NUEVO ---
+                // Extraemos los datos de la base de datos y los guardamos en la memoria del móvil
+                const datosUsuario = consulta.docs[0].data();
+                localStorage.setItem('usuarioContigo', JSON.stringify(datosUsuario));
+                
+                // Le decimos al programa que cambie a la pantalla del menú
+                window.location.href = 'menu.html';
+            }
+            
+        } catch (e) { 
+            mostrarAviso("Error al verificar la cuenta."); 
+        }
     });
 }
