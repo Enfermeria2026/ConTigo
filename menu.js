@@ -17,15 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- FUNCIÓN DE CUMPLEAÑOS ---
-    // Verificamos si hoy es el cumple del usuario
-    if (usuario.fecha) {
+    // Buscamos la fecha, se llame como se llame en la base de datos
+    const fechaGuardada = usuario.fecha_nacimiento || usuario.fecha;
+
+    if (fechaGuardada) {
         const hoy = new Date();
         const diaActual = hoy.getDate();
         const mesActual = hoy.getMonth() + 1; // Enero es 0
-        const anoActual = hoy.getFullYear(); // <-- NUEVO: Obtenemos el año actual
+        const anoActual = hoy.getFullYear(); // Obtenemos el año actual
 
-        const partes = usuario.fecha.split('-'); // Formato YYYY-MM-DD
-        const anoNacimiento = parseInt(partes[0], 10); // <-- NUEVO: Extraemos su año de nacimiento
+        const partes = fechaGuardada.split('-'); // Formato YYYY-MM-DD
+        const anoNacimiento = parseInt(partes[0], 10); 
         const mesNacimiento = parseInt(partes[1], 10);
         const diaNacimiento = parseInt(partes[2], 10);
 
@@ -36,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarFelicitacion(usuario.nombre, edad);
         }
     }
-
     // Botón Salir
     const btnSalir = document.getElementById('btn-salir');
     if (btnSalir) {
