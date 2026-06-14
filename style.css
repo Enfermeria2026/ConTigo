@@ -1,13 +1,13 @@
 :root {
     --azul-marino: #002B5B;
     --verde-agua: #14B8A6;
-    --naranja: #F5A623; /* Naranja/Dorado para líneas, corazón y puntos */
+    --naranja: #F5A623;
     --fondo: #FFFFFF;
 }
 
 body {
     margin: 0;
-    padding: 20px;
+    padding: 10px; /* Reducido para evitar scroll */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,18 +15,20 @@ body {
     font-family: sans-serif;
     background-color: var(--fondo);
     color: var(--azul-marino);
+    overflow-y: auto; /* Permite scroll solo si la pantalla es extremadamente pequeña */
 }
 
 .pantalla-contenedor {
     width: 100%;
-    max-width: 500px;
+    max-width: 480px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 /* Logos */
-.logo { width: 220px; margin-bottom: 10px; }
+.logo { width: 180px; margin-bottom: 5px; }
 
-/* --- Pantalla de Carga Específica --- */
+/* Pantalla de Carga */
 #pantalla-carga {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -38,55 +40,27 @@ body {
     z-index: 1000;
 }
 
-/* Separador: Línea - Corazón - Línea */
 .separador {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 60%;
-    max-width: 300px;
-    margin: 15px 0;
+    margin: 10px 0;
 }
 
-.linea {
-    flex: 1;
-    height: 2px;
-    background-color: var(--naranja);
-}
+.linea { flex: 1; height: 2px; background-color: var(--naranja); }
+.corazon { color: var(--naranja); font-size: 1.3rem; margin: 0 10px; }
+h1.texto-siempre { font-size: 2.6rem; color: var(--verde-agua); margin: 5px 0; }
+.subtitulo { font-size: 1.2rem; color: var(--azul-marino); margin-bottom: 25px; }
 
-.corazon {
-    color: var(--naranja);
-    font-size: 1.5rem;
-    margin: 0 15px;
-}
-
-h1.texto-siempre { 
-    font-size: 3rem; 
-    color: var(--verde-agua); 
-    margin: 5px 0; 
-}
-
-.subtitulo { 
-    font-size: 1.3rem; 
-    color: var(--azul-marino); 
-    margin-bottom: 40px; 
-}
-
-/* Puntos de Carga Animados (Naranjas y Circulares) */
-.puntos-carga {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
+/* Puntos de Carga */
+.puntos-carga { display: flex; justify-content: center; gap: 12px; }
 .punto {
-    width: 20px;
-    height: 20px;
+    width: 16px; height: 16px;
     background-color: var(--naranja);
     border-radius: 50%;
     animation: latido 1.4s infinite ease-in-out both;
 }
-
 .punto:nth-child(1) { animation-delay: -0.32s; }
 .punto:nth-child(2) { animation-delay: -0.16s; }
 
@@ -95,16 +69,15 @@ h1.texto-siempre {
     40% { transform: scale(1); }
 }
 
-/* --- Fin Pantalla de Carga --- */
+h1 { font-size: 2rem; color: var(--azul-marino); margin: 10px 0; }
+label { display: block; text-align: left; font-size: 1.3rem; font-weight: bold; margin-top: 10px; }
 
-h1 { font-size: 2.2rem; color: var(--azul-marino); margin-bottom: 20px; }
-
-/* Inputs y botones gigantes */
+/* Inputs y botones optimizados */
 input {
     width: 100%;
-    padding: 25px;
-    margin: 15px 0;
-    font-size: 1.5rem;
+    padding: 18px; /* Ajustado para que quepa todo sin scroll */
+    margin: 8px 0;
+    font-size: 1.4rem;
     border: 3px solid #ccc;
     border-radius: 15px;
     box-sizing: border-box;
@@ -112,9 +85,9 @@ input {
 
 button {
     width: 100%;
-    padding: 25px;
-    margin-top: 20px;
-    font-size: 1.8rem;
+    padding: 18px;
+    margin-top: 15px;
+    font-size: 1.5rem;
     background-color: var(--verde-agua);
     color: white;
     border: none;
@@ -123,7 +96,16 @@ button {
     font-weight: bold;
 }
 
-.btn-secundario { background-color: var(--azul-marino); margin-top: 15px; }
+/* Distribución en fila para el Registro */
+.fila-botones {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
+.fila-botones button { margin-top: 10px; }
+
+.btn-secundario { background-color: var(--azul-marino); }
+.btn-gris { background-color: #7f8c8d; }
 
 /* Modales */
 .modal {
@@ -134,14 +116,15 @@ button {
 }
 
 .modal-contenido {
-    background-color: white; padding: 40px; border-radius: 20px;
-    width: 80%; max-width: 400px; text-align: center;
+    background-color: white; padding: 30px; border-radius: 20px;
+    width: 85%; max-width: 420px; text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .advertencia {
     background-color: #fff3cd; border: 2px solid var(--naranja);
-    padding: 20px; border-radius: 15px; font-size: 1.3rem;
-    text-align: left; margin: 20px 0; color: #664d03;
+    padding: 15px; border-radius: 15px; font-size: 1.1rem;
+    text-align: left; margin: 10px 0; color: #664d03;
 }
 
 .oculto { display: none !important; }
