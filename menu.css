@@ -50,19 +50,21 @@ header {
     font-weight: bold;
 }
 
-/* Fila Superior (Contactos y Emergencias) */
+/* Fila Superior: Ajustada para alinear el SOS a la derecha */
 .fila-superior {
     display: flex;
-    gap: 12px;
+    gap: 15px; /* Misma separación que la cuadrícula de abajo */
     margin-bottom: 25px;
+    width: 100%;
 }
+
 .btn-fav {
-    flex: 1;
+    flex: 1.2; /* Un poco más anchos para empujar al SOS */
     background-color: #F8F9F9;
     border: 3px dashed #BDC3C7;
     border-radius: 18px;
-    padding: 15px;
-    font-size: 1.1rem;
+    padding: 10px;
+    font-size: 1rem; /* Un pelín más pequeño para que quepa el texto nuevo */
     font-weight: bold;
     color: #7F8C8D;
     cursor: pointer;
@@ -71,21 +73,25 @@ header {
     justify-content: center;
     text-align: center;
 }
+
 .btn-sos {
-    flex: 1;
-    background-color: var(--rojo-pasion); /* Rojo Rojo Intenso */
+    width: 105px; /* Tamaño ajustado para que el borde derecho coincida con el de abajo */
+    height: 105px; /* Lo hacemos cuadrado */
+    background-color: var(--rojo-pasion);
     border: none;
     border-radius: 18px;
     color: white;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 8px rgba(255,0,0,0.3);
+    flex-shrink: 0; /* Evita que se encoja */
 }
+
 .btn-sos img {
     width: 35px;
     margin-bottom: 5px;
