@@ -71,12 +71,13 @@ button {
 /* Enlace recuperar ID */
 .enlace-recuperar {
     display: inline-block;
-    margin-top: 35px !important; /* !important fuerza una gran separación del botón superior */
+    margin-top: 35px !important; 
     font-size: 1.15rem;
     color: var(--azul-marino);
-    text-decoration: underline !important; /* !important fuerza el subrayado */
+    text-decoration: underline !important; 
     font-weight: bold;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent; /* <-- Esta es la magia que quita el rectángulo azul */
 }
 
 /* Modales */
