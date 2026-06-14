@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConTigo - Registro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="contenedor">
+    <h1>Crear Cuenta</h1>
+    
+    <input type="text" id="reg-nombre" placeholder="Nombre">
+    <input type="text" id="reg-apellidos" placeholder="Apellidos">
+    <p style="text-align: left; margin-bottom: 5px;">Fecha de nacimiento:</p>
+    <input type="date" id="reg-fecha">
+    
+    <div class="advertencia">
+      <strong>⚠️ Importante:</strong> El "Identificador" es tu clave secreta. Anótalo en un lugar seguro o compártelo con alguien de mucha confianza. Te sugerimos usar algo fácil de recordar, como el nombre de tu mascota, la ciudad donde naciste o el nombre de un familiar.
+    </div>
+    <input type="text" id="reg-id" placeholder="Crea tu Identificador">
+    
+    <button id="btn-registrar">Registrarme</button>
+    <button class="secundario" onclick="window.location.href='index.html'">Volver</button>
+  </div>
+
+  <div id="modal-aviso" class="modal oculto">
+    <div class="modal-contenido">
+      <p id="texto-modal"></p>
+      <button id="btn-cerrar-modal">Aceptar</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
