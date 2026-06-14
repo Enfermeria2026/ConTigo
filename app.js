@@ -144,28 +144,27 @@ if (btnRecSiguiente) {
     btnRecSiguiente.addEventListener('click', async () => {
         const n = document.getElementById('rec-nombre')?.value.trim();
         const a = document.getElementById('rec-apellidos')?.value.trim();
-        const f = document.getElementById('rec-fecha')?.value; // Formato de fecha del input
+        const f = document.getElementById('rec-fecha')?.value; 
 
         if (!n || !a || !f) return mostrarAviso("Rellena nombre, apellidos y fecha para buscarte.");
 
-        console.log("Buscando en Firebase con estos datos exactos:", { nombre: n, apellidos: a, fecha: String(f) });
+        const nLimpio = normalizarTexto(n);
+        const aLimpio = normalizarTexto(a);
 
-       try {
+        try {
             const q = query(collection(db, "usuarios"), 
-                where("nombre", "==", n), 
-                where("apellidos", "==", a), 
-                where("fecha", "==", String(f))
+                where("nombre_normalizado", "==", nLimpio), 
+                where("apellidos_normalizados", "==", aLimpio), 
+                where("fecha_nacimiento", "==", String(f))
             );
             const consulta = await getDocs(q);
 
             if (consulta.empty) {
                 mostrarAviso("No encontramos ninguna cuenta con esos datos. Revísalos bien.");
             } else if (consulta.size >= 2) {
-                // Hay dos o más personas con los mismos datos
-                if (modalRecuperar) modalRecuperar.classList.add('oculto'); // Cierra el recuadro de recuperar
-                mostrarAviso("Hemos detectado dos cuentas con los mismos datos personales, por favor, póngase en contacto con nuestro equipo de soporte a la siguiente dirección: soporte@conTigo.com");
+                if (modalRecuperar) modalRecuperar.classList.add('oculto');
+                mostrarAviso("Hemos detectado dos cuentas con los mismos datos personales, por favor, póngase en contacto con nuestro equipo de soporte a la siguiente dirección: <b>soporte@conTigo.com</b>");
             } else {
-                // Solo hay una persona, le mostramos su ID
                 const datosUsuario = consulta.docs[0].data();
                 if (cajaIdMostrado) cajaIdMostrado.innerText = datosUsuario.identificador;
                 if (paso1Rec) paso1Rec.classList.add('oculto');
