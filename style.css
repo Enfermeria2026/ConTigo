@@ -67,13 +67,14 @@ button {
 .btn-gris { background-color: #7f8c8d; }
 
 /* Enlace recuperar ID */
+
+/* Enlace recuperar ID */
 .enlace-recuperar {
     display: inline-block;
-    margin-top: 35px; /* Mucho más separado del botón de crear cuenta */
-    padding: 10px; /* Área táctil más grande para que sea fácil de pulsar */
+    margin-top: 35px !important; /* !important fuerza una gran separación del botón superior */
     font-size: 1.15rem;
     color: var(--azul-marino);
-    text-decoration: underline; /* Subrayado forzado */
+    text-decoration: underline !important; /* !important fuerza el subrayado */
     font-weight: bold;
     cursor: pointer;
 }
