@@ -139,14 +139,14 @@ if (btnRecSiguiente) {
 
         if (!n || !a || !f) return mostrarAviso("Rellena nombre, apellidos y fecha para buscarte.");
 
-        console.log("Buscando en Firebase con estos datos exactos:", { nombre: n, apellidos: a, fecha_nacimiento: String(f) });
+        console.log("Buscando en Firebase con estos datos exactos:", { nombre: n, apellidos: a, fecha: String(f) });
 
         try {
             // Buscamos forzando a que la fecha se compare estrictamente como texto
             const q = query(collection(db, "usuarios"), 
                 where("nombre", "==", n), 
                 where("apellidos", "==", a), 
-                where("fecha_nacimiento", "==", String(f))
+                where("fecha", "==", String(f))
             );
             const consulta = await getDocs(q);
 
@@ -207,7 +207,7 @@ if (btnRegistrar) {
                 const qHomonimo = query(collection(db, "usuarios"), 
                     where("nombre", "==", nombre), 
                     where("apellidos", "==", apellidos), 
-                    where("fecha_nacimiento", "==", String(fecha))
+                    where("fecha", "==", String(fecha))
                 );
                 const consultaHomonimo = await getDocs(qHomonimo);
 
