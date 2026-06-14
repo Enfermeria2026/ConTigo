@@ -1,5 +1,3 @@
-/* style.css */
-
 :root {
     --azul-marino: #002B5B;
     --verde-agua: #14B8A6;
@@ -7,18 +5,16 @@
     --fondo: #FFFFFF;
 }
 
-/* Esta regla es vital para que el padding no genere scroll extra */
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    /* 4vh de espacio arriba, 15px a los lados. Evita el scroll innecesario */
     padding: 4vh 15px 15px 15px; 
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* <-- CLAVE: Sube todos los elementos hacia la parte superior */
+    align-items: flex-start;
     min-height: 100vh;
     font-family: sans-serif;
     background-color: var(--fondo);
@@ -32,7 +28,7 @@ body {
     text-align: center;
 }
 
-/* Logos: Un poco más pegados al título */
+/* Logos */
 .logo { width: 170px; margin-bottom: 0px; }
 
 /* --- Pantalla de Carga --- */
@@ -43,7 +39,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; /* Aquí sí centramos todo al medio */
+    align-items: center;
     z-index: 1000;
 }
 
@@ -82,28 +78,17 @@ label { display: block; text-align: left; font-size: 1.2rem; font-weight: bold; 
 /* Inputs optimizados */
 input {
     width: 100%;
-    padding: 15px; /* Reducido de 18 a 15 para ganar espacio vertical */
+    padding: 15px;
     margin: 6px 0;
     font-size: 1.3rem;
     border: 3px solid #ccc;
     border-radius: 12px;
 }
 
-/* Fila para Nombre y Apellidos */
-.fila-inputs {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-.fila-inputs input {
-    flex: 1; 
-    min-width: 0; 
-}
-
 /* Botones optimizados */
 button {
     width: 100%;
-    padding: 16px; /* Reducido de 18 a 16 */
+    padding: 16px;
     margin-top: 10px;
     font-size: 1.4rem;
     background-color: var(--verde-agua);
