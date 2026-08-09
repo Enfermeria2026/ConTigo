@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vinculoF = selectFamiliarVinculo.value;
 
         if (!nombreF || !vinculoF) {
-            alert("Por favor, escribe el nombre y selecciona el vínculo.");
+            mostrarAviso("Por favor, escribe el nombre y selecciona el vínculo.");
             return;
         }
 
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Validar obligatorios
         if (!ccaa || !provincia || !localidad) {
-            alert("⚠️ Por favor, rellena tu Comunidad Autónoma, Provincia y Localidad. Son necesarios para los servicios de emergencia y farmacias.");
+            mostrarAviso("⚠️ Por favor, rellena tu Comunidad Autónoma, Provincia y Localidad. Son necesarios para los servicios de emergencia y farmacias.");
             return;
         }
 
@@ -240,10 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 usuario.arbol_genealogico = arbolFamiliar;
                 localStorage.setItem('usuarioContigo', JSON.stringify(usuario));
 
-                alert("✅ ¡Perfil actualizado correctamente!");
+                mostrarAviso("✅ ¡Perfil actualizado correctamente!");
             }
         } catch (error) {
-            alert("❌ Hubo un error al guardar. Revisa tu conexión a internet.");
+            mostrarAviso("❌ Hubo un error al guardar. Revisa tu conexión a internet.");
         } finally {
             // Restauramos el botón
             btnGuardar.innerText = "💾 Guardar Cambios";
