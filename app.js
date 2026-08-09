@@ -1,8 +1,3 @@
-// Si el usuario ya había iniciado sesión antes, lo mandamos directo al menú
-if (localStorage.getItem('usuarioContigo')) {
-    window.location.replace('menu.html');
-}
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -17,6 +12,12 @@ const firebaseConfig = {
 };
 
 const db = getFirestore(initializeApp(firebaseConfig));
+
+// --- NUEVO: INICIO DE SESIÓN AUTOMÁTICO ---
+// Si el usuario ya está guardado en el móvil, lo mandamos directo al menú
+if (localStorage.getItem('usuarioContigo')) {
+    window.location.replace('menu.html');
+}
 
 // --- FUNCIÓN PARA LIMPIAR TEXTOS (Sin mayúsculas ni acentos) ---
 function normalizarTexto(texto) {
