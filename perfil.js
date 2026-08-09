@@ -313,3 +313,76 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+
+// --- 10. TUTORIAL GUIADO DEL PERFIL (PARTE 2) ---
+    const tutorialPerfil = localStorage.getItem('tutorialPerfil');
+    if (tutorialPerfil === 'true') {
+        iniciarTutorialPerfil();
+    }
+
+    function iniciarTutorialPerfil() {
+        const pasos = [
+            {
+                titulo: "Explora deslizando 👇",
+                texto: "Al igual que en el menú principal, en esta pantalla también puedes <b>deslizar el dedo hacia arriba o hacia abajo</b> para ver toda la información."
+            },
+            {
+                titulo: "Tus Datos Fijos 🔒",
+                texto: "Arriba del todo verás tu nombre, apellidos y fecha de nacimiento. Estos datos <b>no se pueden modificar</b> por motivos de seguridad."
+            },
+            {
+                titulo: "Tu Ubicación 📍",
+                texto: "La Comunidad, Provincia y Localidad son <b>obligatorias</b>. Necesitamos saber dónde estás para que puedan funcionar botones como 'Farmacias' o 'El Tiempo'."
+            },
+            {
+                titulo: "Sobre Mí ✨",
+                texto: "Más abajo hay un apartado opcional. Ahí puedes escribir tu <b>color favorito</b> y una pequeña descripción sobre tu personalidad o tus gustos."
+            },
+            {
+                titulo: "Árbol Genealógico 🌳",
+                texto: "También puedes crear tu propio <b>Árbol Genealógico</b>. Pulsa en añadir para colocar a tus familiares (padres, hijos, nietos...) con su nombre y parentesco."
+            },
+            {
+                titulo: "Paso Final: ¡Guardar! 💾",
+                texto: "Cuando hayas rellenado todo, no olvides pulsar el botón grande verde que dice <b>'Guardar Cambios'</b> al final del todo. ¡Comencemos!"
+            }
+        ];
+
+        let pasoActual = 0;
+        const modalTut = document.getElementById('modal-tutorial-perfil');
+        const tituloTut = document.getElementById('tutorial-titulo-perfil');
+        const textoTut = document.getElementById('tutorial-texto-perfil');
+        const indicadorTut = document.getElementById('tutorial-indicador-perfil');
+        const btnSiguienteTut = document.getElementById('btn-tutorial-siguiente-perfil');
+
+        if (!modalTut) return;
+
+        function mostrarPaso() {
+            tituloTut.innerText = pasos[pasoActual].titulo;
+            textoTut.innerHTML = pasos[pasoActual].texto;
+            indicadorTut.innerText = `Paso ${pasoActual + 1} de ${pasos.length}`;
+            
+            if (pasoActual === pasos.length - 1) {
+                btnSiguienteTut.innerText = "¡Empezar a rellenar!";
+                btnSiguienteTut.style.backgroundColor = "#F39C12"; // Color llamativo
+                btnSiguienteTut.style.color = "white";
+            } else {
+                btnSiguienteTut.innerText = "Siguiente";
+            }
+        }
+
+        modalTut.classList.remove('oculto');
+        mostrarPaso();
+
+        // Para evitar que el botón falle si le dan clics muy rápidos, usamos onclick
+        btnSiguienteTut.onclick = () => {
+            if (pasoActual < pasos.length - 1) {
+                pasoActual++;
+                mostrarPaso();
+            } else {
+                // Fin del tutorial: Borramos la etiqueta para que no vuelva a salir nunca más
+                localStorage.removeItem('tutorialPerfil');
+                modalTut.classList.add('oculto');
+            }
+        };
+    }
