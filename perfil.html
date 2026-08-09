@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConTigo - Mi Perfil</title>
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body>
+
+    <!-- Cabecera -->
+    <header>
+        <button id="btn-volver" class="btn-volver">⬅ Volver</button>
+        <h1>Mi Perfil</h1>
+        <p class="subtitulo">Completa tu información para mejorar tu experiencia.</p>
+    </header>
+
+    <main>
+        <!-- SECCIÓN 1: Datos por Defecto (Bloqueados) -->
+        <section class="tarjeta">
+            <h2>👤 Mis Datos Personales</h2>
+            
+            <label>Nombre:</label>
+            <input type="text" id="perfil-nombre" readonly class="input-bloqueado">
+            
+            <label>Apellidos:</label>
+            <input type="text" id="perfil-apellidos" readonly class="input-bloqueado">
+            
+            <label>Fecha de nacimiento:</label>
+            <input type="date" id="perfil-fecha" readonly class="input-bloqueado">
+        </section>
+
+        <!-- SECCIÓN 2: Ubicación (Obligatorio) -->
+        <section class="tarjeta">
+            <h2>📍 Mi Ubicación <span class="etiqueta-obligatorio">(Obligatorio)</span></h2>
+            
+            <label>Comunidad Autónoma:</label>
+            <select id="select-ccaa">
+                <option value="">Selecciona una opción...</option>
+                <!-- El Javascript rellenará esto -->
+            </select>
+
+            <label>Provincia:</label>
+            <select id="select-provincia" disabled>
+                <option value="">Primero elige una Comunidad...</option>
+            </select>
+
+            <label>Localidad:</label>
+            <select id="select-localidad" disabled>
+                <option value="">Primero elige una Provincia...</option>
+            </select>
+        </section>
+
+        <!-- SECCIÓN 3: Datos Opcionales -->
+        <section class="tarjeta">
+            <h2>✨ Sobre Mí <span class="etiqueta-opcional">(Opcional)</span></h2>
+            
+            <label>Mi color favorito:</label>
+            <input type="text" id="perfil-color" placeholder="Ej: Verde esmeralda">
+
+            <label>Una pequeña descripción sobre mí:</label>
+            <textarea id="perfil-descripcion" rows="3" placeholder="Ej: Me encanta pasear por la playa y leer novelas de misterio..."></textarea>
+        </section>
+
+        <!-- SECCIÓN 4: Árbol Genealógico -->
+        <section class="tarjeta">
+            <h2>🌳 Mi Árbol Genealógico <span class="etiqueta-opcional">(Opcional)</span></h2>
+            <p class="info-arbol">Añade a tus familiares para tenerlos siempre presentes.</p>
+            
+            <div class="caja-añadir-familiar">
+                <input type="text" id="input-familiar-nombre" placeholder="Nombre (Ej: Carlos)">
+                <select id="select-familiar-vinculo">
+                    <option value="">Vínculo...</option>
+                    <option value="Padre/Madre">Padre / Madre</option>
+                    <option value="Hijo/a">Hijo / a</option>
+                    <option value="Hermano/a">Hermano / a</option>
+                    <option value="Nieto/a">Nieto / a</option>
+                    <option value="Nuera/Yerno">Nuera / Yerno</option>
+                    <option value="Cuñado/a">Cuñado / a</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <button id="btn-añadir-familiar" class="btn-añadir">➕ Añadir</button>
+            </div>
+
+            <!-- Aquí irán apareciendo los familiares en forma de "dibujo/lista" -->
+            <div id="contenedor-arbol" class="contenedor-arbol"></div>
+        </section>
+
+        <!-- BOTÓN DE GUARDAR -->
+        <button id="btn-guardar-perfil" class="btn-guardar">💾 Guardar Cambios</button>
+    </main>
+
+    <script type="module" src="perfil.js"></script>
+</body>
+</html>
