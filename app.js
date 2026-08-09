@@ -1,3 +1,8 @@
+// Si el usuario ya había iniciado sesión antes, lo mandamos directo al menú
+if (localStorage.getItem('usuarioContigo')) {
+    window.location.replace('menu.html');
+}
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
