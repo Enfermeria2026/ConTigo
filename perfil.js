@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cuando cambias de Provincia... (AQUÍ OCURRE LA MAGIA DE LA API)
+   // Cuando cambias de Provincia... (AQUÍ OCURRE LA MAGIA DE LA API)
     selectProvincia.addEventListener('change', async () => {
         selectLocalidad.innerHTML = '<option value="">Cargando pueblos...</option>';
         
@@ -99,21 +99,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const idProvincia = opcionElegida.dataset.id;
             
             try {
-                // Conectamos a la API pública de España
-                const respuesta = await fetch(`https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`);
+                // Usamos una nueva API gubernamental más estable y permisiva
+                const respuesta = await fetch(`https://apiv1.geoapi.es/municipios?CPRO=${idProvincia}&type=JSON&key=&sandbox=1`);
                 const datos = await respuesta.json();
                 
                 selectLocalidad.innerHTML = '<option value="">Selecciona tu localidad...</option>';
-                datos.municipios.forEach(muni => {
-                    const opcion = document.createElement('option');
-                    opcion.value = muni.NOMBRE;
-                    opcion.innerText = muni.NOMBRE;
-                    selectLocalidad.appendChild(opcion);
-                });
+                
+                // Rellenamos el desplegable con los datos
+                if (datos.data) {
+                    datos.data.forEach(muni => {
+                        const opcion = document.createElement('option');
+                        opcion.value = muni.MUNI;
+                        opcion.innerText = muni.MUNI;
+                        selectLocalidad.appendChild(opcion);
+                    });
+                }
                 selectLocalidad.disabled = false;
+                
             } catch (error) {
-                // PLAN B: Si la API falla por falta de internet, lo convertimos en texto libre
-                selectLocalidad.outerHTML = '<input type="text" id="select-localidad" placeholder="Escribe aquí tu localidad">';
+                // Si algo falla, NO lo convertimos en texto, simplemente mostramos un aviso en el desplegable
+                selectLocalidad.innerHTML = '<option value="">Error al descargar pueblos. Reintenta.</option>';
+                selectLocalidad.disabled = true;
             }
         } else {
             selectLocalidad.disabled = true;
