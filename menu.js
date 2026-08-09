@@ -203,28 +203,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- FUNCIÓN DE CUMPLEAÑOS ---
-    // Buscamos la fecha, se llame como se llame en la base de datos
-    const fechaGuardada = usuario.fecha_nacimiento || usuario.fecha;
+    const acabaDeEntrar = localStorage.getItem('acabaDeEntrar');
+    
+    // Solo comprobamos el cumple si trae el ticket de haber iniciado sesión o registrado AHORA MISMO
+    if (acabaDeEntrar === 'true') {
+        // Quemamos el ticket al instante para que no vuelva a salir si vamos al perfil y volvemos
+        localStorage.removeItem('acabaDeEntrar'); 
+        
+        // Buscamos la fecha, se llame como se llame en la base de datos
+        const fechaGuardada = usuario.fecha_nacimiento || usuario.fecha;
 
-    if (fechaGuardada) {
-        const hoy = new Date();
-        const diaActual = hoy.getDate();
-        const mesActual = hoy.getMonth() + 1; // Enero es 0
-        const anoActual = hoy.getFullYear(); // Obtenemos el año actual
+        if (fechaGuardada) {
+            const hoy = new Date();
+            const diaActual = hoy.getDate();
+            const mesActual = hoy.getMonth() + 1; // Enero es 0
+            const anoActual = hoy.getFullYear(); // Obtenemos el año actual
 
-        const partes = fechaGuardada.split('-'); // Formato YYYY-MM-DD
-        const anoNacimiento = parseInt(partes[0], 10); 
-        const mesNacimiento = parseInt(partes[1], 10);
-        const diaNacimiento = parseInt(partes[2], 10);
+            const partes = fechaGuardada.split('-'); // Formato YYYY-MM-DD
+            const anoNacimiento = parseInt(partes[0], 10); 
+            const mesNacimiento = parseInt(partes[1], 10);
+            const diaNacimiento = parseInt(partes[2], 10);
 
-        if (diaActual === diaNacimiento && mesActual === mesNacimiento) {
-            // Calculamos la edad exacta
-            const edad = anoActual - anoNacimiento;
-            // ¡Es su cumpleaños! Lanzamos felicitación pasándole la edad
-            mostrarFelicitacion(usuario.nombre, edad);
+            if (diaActual === diaNacimiento && mesActual === mesNacimiento) {
+                // Calculamos la edad exacta
+                const edad = anoActual - anoNacimiento;
+                // ¡Es su cumpleaños! Lanzamos felicitación pasándole la edad
+                mostrarFelicitacion(usuario.nombre, edad);
+            }
         }
     }
-
+    
 // Botón Perfil
     const btnPerfil = document.getElementById('btn-perfil');
     if (btnPerfil) {
