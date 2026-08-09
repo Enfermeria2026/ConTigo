@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dibujarArbol();
     });
 
-    // 7. GUARDAR DATOS EN FIREBASE
+   // 7. GUARDAR DATOS EN FIREBASE
     const btnGuardar = document.getElementById('btn-guardar-perfil');
     btnGuardar.addEventListener('click', async () => {
         const ccaa = selectCcaa.value;
@@ -228,11 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Validar obligatorios
         if (!ccaa || !provincia || !localidad) {
-            mostrarAviso("⚠️ Por favor, rellena tu Comunidad Autónoma, Provincia y Localidad. Son necesarios para los servicios de emergencia y farmacias.");
+            mostrarAviso("Por favor, rellena tu Comunidad Autónoma, Provincia y Localidad. Son necesarios para los servicios locales.", "Ubicación incompleta", false);
             return;
         }
 
-        // Cambiamos el texto del botón para que sepa que está cargando
         btnGuardar.innerText = "⏳ Guardando...";
         btnGuardar.disabled = true;
 
@@ -240,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const descripcion = document.getElementById('perfil-descripcion').value.trim();
 
         try {
-            // Buscamos al usuario en la base de datos
             const q = query(collection(db, "usuarios"), 
                 where("nombre_normalizado", "==", usuario.nombre_normalizado), 
                 where("identificador_normalizado", "==", usuario.identificador_normalizado)
@@ -250,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!consulta.empty) {
                 const documentoUsuario = consulta.docs[0];
                 
-                // Actualizamos Firebase
                 await updateDoc(documentoUsuario.ref, {
                     ccaa: ccaa,
                     provincia: provincia,
@@ -260,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     arbol_genealogico: arbolFamiliar
                 });
 
-                // Actualizamos la memoria del móvil
                 usuario.ccaa = ccaa;
                 usuario.provincia = provincia;
                 usuario.localidad = localidad;
@@ -269,12 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 usuario.arbol_genealogico = arbolFamiliar;
                 localStorage.setItem('usuarioContigo', JSON.stringify(usuario));
 
-                mostrarAviso("✅ ¡Perfil actualizado correctamente!", true);
+                // AQUÍ ESTÁ LA MAGIA: Pasamos el 'true' para que redirija al menú al pulsar "Entendido"
+                mostrarAviso("Tus datos y tu árbol genealógico se han guardado correctamente.", "¡Perfil actualizado!", true);
             }
         } catch (error) {
-            mostrarAviso("❌ Hubo un error al guardar. Revisa tu conexión a internet.");
+            mostrarAviso("Hubo un error al guardar. Revisa tu conexión a internet y vuelve a intentarlo.", "Error de conexión", false);
         } finally {
-            // Restauramos el botón
             btnGuardar.innerText = "💾 Guardar Cambios";
             btnGuardar.disabled = false;
         }
@@ -287,29 +283,30 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'menu.html';
         });
     }
-});
 
-// --- 9. SISTEMA DE AVISOS PERSONALIZADO ---
+    // --- 9. SISTEMA DE AVISOS PERSONALIZADO ---
     const modalAviso = document.getElementById('modal-aviso-perfil');
     const tituloAviso = document.getElementById('titulo-aviso');
     const textoAviso = document.getElementById('texto-aviso');
     const btnCerrarAviso = document.getElementById('btn-cerrar-aviso');
 
-    let redireccionarDespues = false; // <-- NUEVA MEMORIA PARA EL BOTÓN
+    let redireccionarDespues = false;
 
-    function mostrarAviso(mensaje, titulo = "Aviso", redirigir = false) {
+    // Hacemos que la función esté disponible en todo el archivo
+    window.mostrarAviso = function(mensaje, titulo = "Aviso", redirigir = false) {
         redireccionarDespues = redirigir;
         if (tituloAviso) tituloAviso.innerText = titulo;
         if (textoAviso) textoAviso.innerHTML = mensaje;
         if (modalAviso) modalAviso.classList.remove('oculto');
-    }
+    };
 
     if (btnCerrarAviso) {
-        btnCerrarAviso.addEventListener('click', () => {
+        // Usamos onclick para asegurarnos de que no hay eventos duplicados bloqueando el botón
+        btnCerrarAviso.onclick = () => {
             modalAviso.classList.add('oculto');
-            // Si le hemos dicho que redirija, lo manda al menú al pulsar "Entendido"
-            if (redireccionarDespues) {
-                window.location.href = 'menu.html';
+            if (redireccionarDespues === true) {
+                window.location.replace('menu.html'); // Cambio sutil para forzar la redirección
             }
-        });
+        };
     }
+});
