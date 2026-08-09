@@ -1,5 +1,19 @@
 // menu.js
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyApIiwYA_uSsiEGkD7N7CZUCQkScPsmrZU",
+    authDomain: "contigo-96ced.firebaseapp.com",
+    projectId: "contigo-96ced",
+    storageBucket: "contigo-96ced.firebasestorage.app",
+    messagingSenderId: "26960662171",
+    appId: "1:26960662171:web:e9dd52e4263f8770d9003e",
+    measurementId: "G-7NDPMZ5EGR"
+};
+const db = getFirestore(initializeApp(firebaseConfig));
+
 document.addEventListener('DOMContentLoaded', () => {
     const usuarioRecuperado = localStorage.getItem('usuarioContigo');
     
