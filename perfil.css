@@ -31,8 +31,7 @@ header {
 .btn-volver {
     position: absolute;
     left: 15px;
-    top: 50%; /* Lo bajamos al medio exacto de la cabecera... */
-    transform: translateY(-50%); /* ...y lo centramos matemáticamente */
+    top: 22px; /* Lo anclamos arriba, en línea con "Mi Perfil" */
     background: none;
     border: none;
     color: var(--verde-contigo);
@@ -40,7 +39,7 @@ header {
     font-weight: bold;
     cursor: pointer;
     
-    /* MAGIA PARA CENTRAR LA FLECHA Y EL TEXTO */
+    /* Mantenemos la magia para que la flecha y el texto no bailen */
     display: flex;
     align-items: center;
     gap: 5px;
