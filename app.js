@@ -294,6 +294,10 @@ if (btnIniciar) {
                 // Guardamos los datos bonitos originales en la memoria y vamos al menú
                 const datosUsuario = consulta.docs[0].data();
                 localStorage.setItem('usuarioContigo', JSON.stringify(datosUsuario));
+                
+                // --- NUEVO: TICKET PARA EL CUMPLEAÑOS ---
+                localStorage.setItem('acabaDeEntrar', 'true');
+
                 window.location.href = 'menu.html';
             }
         } catch (e) { mostrarAviso("Error al verificar la cuenta."); }
