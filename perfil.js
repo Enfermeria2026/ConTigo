@@ -150,17 +150,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- INICIAR LA CARGA DE DATOS GUARDADOS ---
     if (usuario.ccaa) {
+        // 1. Elegimos la CCAA guardada
         selectCcaa.value = usuario.ccaa;
-        // Obligamos al programa a "hacer clic" en la CCAA para que salgan las provincias
         selectCcaa.dispatchEvent(new Event('change')); 
         
-        if (usuario.provincia) {
-            selectProvincia.value = usuario.provincia;
-            // Obligamos al programa a "hacer clic" en la provincia para que descargue los pueblos
-            selectProvincia.dispatchEvent(new Event('change')); 
-        }
+        // 2. Le damos un pequeño "respiro" de 150 milisegundos al móvil para que dibuje la lista de provincias
+        setTimeout(() => {
+            if (usuario.provincia) {
+                // 3. Ahora que ya existe la lista, elegimos la Provincia guardada
+                selectProvincia.value = usuario.provincia;
+                selectProvincia.dispatchEvent(new Event('change')); 
+                
+                // La localidad se marcará sola gracias a la 'memoria inteligente' cuando termine de descargar de internet
+            }
+        }, 150); 
     } else {
-        cargandoPerfil = false; // Si es un usuario nuevo sin datos, apagamos la memoria
+        cargandoPerfil = false; // Si es un usuario nuevo, apagamos la memoria
     }
     
     // 6. Lógica del Árbol Genealógico
