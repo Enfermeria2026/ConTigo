@@ -141,7 +141,7 @@ function iniciarTutorial() {
         },
         {
             titulo: "Último paso: Tu Perfil 👤",
-            texto: "Para que funcionen cosas como 'El tiempo' o 'Farmacias', necesitamos saber dónde vives. <b>Vamos a ir a tu Perfil para rellenar esos datos</b>. ¡Es muy fácil!"
+            texto: "Para que funcionen cosas como 'Transporte Local', 'Farmacias de guardia' o 'Eventos cerca de ti', necesitamos saber la localidad en la que vives. <b>Vamos a ir a tu Perfil para rellenar esos datos</b>. ¡Es muy fácil!"
         }
     ];
 
@@ -171,14 +171,16 @@ function iniciarTutorial() {
     modalTut.classList.remove('oculto');
     mostrarPaso();
 
-    btnSiguienteTut.addEventListener('click', () => {
+   btnSiguienteTut.addEventListener('click', () => {
         if (pasoActual < pasos.length - 1) {
             pasoActual++;
             mostrarPaso();
         } else {
-            // Fin del tutorial: Borramos la etiqueta para que no vuelva a salir
+            // 1. Borramos el tutorial del menú
             localStorage.removeItem('necesitaTutorial');
-            // Obligamos a ir a la pantalla de Perfil de forma directa
+            // 2. PASAMOS EL TESTIGO: Activamos el tutorial del perfil
+            localStorage.setItem('tutorialPerfil', 'true');
+            // 3. Vamos al perfil
             window.location.replace('perfil.html');
         }
     });
