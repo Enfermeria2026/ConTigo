@@ -315,10 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- 10. TUTORIAL GUIADO DEL PERFIL (PARTE 2) ---
-    const tutorialPerfil = localStorage.getItem('tutorialPerfil');
-    if (tutorialPerfil === 'true') {
-        iniciarTutorialPerfil();
-    }
+    // Le damos medio segundo de respiro a la pantalla para que dibuje todo antes de lanzar el tutorial
+    setTimeout(() => {
+        const tutorialPerfil = localStorage.getItem('tutorialPerfil');
+        if (tutorialPerfil === 'true') {
+            iniciarTutorialPerfil();
+        }
+    }, 500);
 
     function iniciarTutorialPerfil() {
         const pasos = [
