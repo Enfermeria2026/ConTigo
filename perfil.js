@@ -62,34 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectProvincia = document.getElementById('select-provincia');
     const selectLocalidad = document.getElementById('select-localidad');
 
-  // Llenar CCAA
+    // Llenar CCAA
     Object.keys(datosEspana).forEach(ccaa => {
         const opcion = document.createElement('option');
         opcion.value = ccaa;
         opcion.innerText = ccaa;
         selectCcaa.appendChild(opcion);
     });
-
-    // --- NUEVO: RESTAURAR DATOS GUARDADOS DE UBICACIÓN ---
-    if (usuario.ccaa) {
-        selectCcaa.value = usuario.ccaa;
-        selectCcaa.dispatchEvent(new Event('change')); // Hace como si hiciéramos clic para cargar provincias
-        
-        setTimeout(() => {
-            if (usuario.provincia) {
-                selectProvincia.value = usuario.provincia;
-                selectProvincia.dispatchEvent(new Event('change')); // Hace clic para descargar los pueblos
-                
-                // Le damos 1 segundo al internet para bajar los pueblos y luego lo seleccionamos
-                setTimeout(() => {
-                    const selectLoc = document.getElementById('select-localidad');
-                    if (usuario.localidad && selectLoc) {
-                        selectLoc.value = usuario.localidad;
-                    }
-                }, 1000);
-            }
-        }, 100);
-    }
 
     // Cuando cambias de CCAA...
     selectCcaa.addEventListener('change', () => {
@@ -102,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             datosEspana[selectCcaa.value].forEach(prov => {
                 const opcion = document.createElement('option');
                 opcion.value = prov.nombre;
-                opcion.dataset.id = prov.id; // Guardamos el código secreto para la API
+                opcion.dataset.id = prov.id; // Código secreto para la API
                 opcion.innerText = prov.nombre;
                 selectProvincia.appendChild(opcion);
             });
@@ -111,7 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cuando cambias de Provincia... (AHORA SÍ, VERSIÓN 3 OFICIAL ACTUALIZADA)
+    // --- NUEVA MEMORIA INTELIGENTE ---
+    let cargandoPerfil = true; 
+
+    // Cuando cambias de Provincia...
     selectProvincia.addEventListener('change', async () => {
         const selectLoc = document.getElementById('select-localidad');
         
@@ -121,26 +103,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectProvincia.value !== "") {
             const opcionElegida = selectProvincia.options[selectProvincia.selectedIndex];
             const idProvincia = opcionElegida.dataset.id;
-            
-            // LA NUEVA RUTA OFICIAL V3 (¡Ese era el error!)
             const urlOficial = `https://api.el-tiempo.net/json/v3/provincias/${idProvincia}/municipios`;
             
             try {
-                // Intentamos conectar por la ruta principal (Instantánea)
                 let respuesta;
                 try {
                     respuesta = await fetch(urlOficial);
                 } catch(e) {
-                    // Si estás probando desde el ordenador y tu antivirus lo bloquea, usamos un puente ultrarrápido
                     const urlPuente = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlOficial)}`;
                     respuesta = await fetch(urlPuente);
                 }
                 
                 const datos = await respuesta.json();
-                
                 selectLoc.innerHTML = '<option value="">Selecciona tu localidad...</option>';
                 
-                // Rellenamos el desplegable con la nueva versión
                 if (datos.municipios && datos.municipios.length > 0) {
                     datos.municipios.forEach(muni => {
                         const opcion = document.createElement('option');
@@ -148,22 +124,44 @@ document.addEventListener('DOMContentLoaded', () => {
                         opcion.innerText = muni.NOMBRE;
                         selectLoc.appendChild(opcion);
                     });
-                    selectLoc.disabled = false; // Activamos el desplegable
+                    selectLoc.disabled = false;
+                    
+                    // LA MAGIA: Si estamos entrando al perfil, marcamos su pueblo justo cuando termina de cargar
+                    if (cargandoPerfil && usuario.localidad) {
+                        selectLoc.value = usuario.localidad;
+                        cargandoPerfil = false; // Apagamos la memoria inicial
+                    }
                 } else {
                     throw new Error("Datos vacíos");
                 }
                 
             } catch (error) {
-                // Si todo falla (ej: te quedas sin WiFi real)
                 selectLoc.innerHTML = '<option value="">Error. Elige la provincia de nuevo.</option>';
                 selectLoc.disabled = true;
-                mostrarAviso("No se han podido descargar las localidades. Comprueba tu conexión a internet y vuelve a seleccionar la provincia para reintentarlo.", "Error de conexión");
+                if(window.mostrarAviso) {
+                    window.mostrarAviso("No se han podido descargar las localidades. Comprueba tu conexión a internet.", "Error de conexión");
+                }
             }
         } else {
             selectLoc.disabled = true;
             selectLoc.innerHTML = '<option value="">Primero elige una Provincia...</option>';
         }
     });
+
+    // --- INICIAR LA CARGA DE DATOS GUARDADOS ---
+    if (usuario.ccaa) {
+        selectCcaa.value = usuario.ccaa;
+        // Obligamos al programa a "hacer clic" en la CCAA para que salgan las provincias
+        selectCcaa.dispatchEvent(new Event('change')); 
+        
+        if (usuario.provincia) {
+            selectProvincia.value = usuario.provincia;
+            // Obligamos al programa a "hacer clic" en la provincia para que descargue los pueblos
+            selectProvincia.dispatchEvent(new Event('change')); 
+        }
+    } else {
+        cargandoPerfil = false; // Si es un usuario nuevo sin datos, apagamos la memoria
+    }
     
     // 6. Lógica del Árbol Genealógico
     const btnAddFamiliar = document.getElementById('btn-añadir-familiar');
