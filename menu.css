@@ -1,5 +1,9 @@
 /* menu.css */
 
+/* Quita el parpadeo azul al pulsar en móviles */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
 :root {
     --verde-contigo: #14B8A6;
     --rojo-pasion: #FF0000;
