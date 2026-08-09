@@ -90,34 +90,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-  // Cuando cambias de Provincia... (LA SOLUCIÓN DEFINITIVA)
+  // Cuando cambias de Provincia... (SOLUCIÓN DEFINITIVA SÓLO DESPLEGABLE)
     selectProvincia.addEventListener('change', async () => {
-        let selectLoc = document.getElementById('select-localidad');
+        const selectLoc = document.getElementById('select-localidad');
         
-        // Si antes se transformó en un input de texto por un fallo, lo restauramos a select
-        if (selectLoc.tagName === 'INPUT') {
-            const nuevoSelect = document.createElement('select');
-            nuevoSelect.id = 'select-localidad';
-            selectLoc.parentNode.replaceChild(nuevoSelect, selectLoc);
-            selectLoc = nuevoSelect; // Actualizamos la referencia
-        }
-
-        selectLoc.innerHTML = '<option value="">Cargando pueblos...</option>';
+        selectLoc.innerHTML = '<option value="">Cargando pueblos, un momento...</option>';
         selectLoc.disabled = true;
         
         if (selectProvincia.value !== "") {
             const opcionElegida = selectProvincia.options[selectProvincia.selectedIndex];
             const idProvincia = opcionElegida.dataset.id;
+            const urlOficial = `https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`;
             
             try {
-                // Usamos CodeTabs, un proxy amigable para desarrollo local que no bloquea
-                const url = `https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`;
-                const respuesta = await fetch(`https://api.codetabs.com/v1/proxy?quest=${url}`);
+                let respuesta;
+                try {
+                    // Intento 1: Conexión directa (Instantánea)
+                    respuesta = await fetch(urlOficial);
+                } catch (errorCors) {
+                    // Intento 2: Si el navegador bloquea la directa, usamos el puente en modo "RAW" (Ultra rápido)
+                    const urlPuente = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlOficial)}`;
+                    respuesta = await fetch(urlPuente);
+                }
+                
                 const datos = await respuesta.json();
                 
                 selectLoc.innerHTML = '<option value="">Selecciona tu localidad...</option>';
                 
-                // Si la API nos devuelve datos, llenamos el desplegable
+                // Rellenamos el desplegable
                 if (datos.municipios && datos.municipios.length > 0) {
                     datos.municipios.forEach(muni => {
                         const opcion = document.createElement('option');
@@ -125,24 +125,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         opcion.innerText = muni.NOMBRE;
                         selectLoc.appendChild(opcion);
                     });
-                    selectLoc.disabled = false;
+                    selectLoc.disabled = false; // Activamos el desplegable
                 } else {
-                    throw new Error("Datos vacíos"); // Forzamos el salto al Catch
+                    throw new Error("Datos vacíos"); // Forzamos el error si no hay pueblos
                 }
                 
             } catch (error) {
-                console.warn("La API falló. Activando Plan B de texto libre.");
-                // PLAN B INFALIBLE: Si el internet o la base de datos fallan, 
-                // transformamos la caja en un input de texto normal para que el usuario no se quede bloqueado.
-                const inputTexto = document.createElement('input');
-                inputTexto.type = 'text';
-                inputTexto.id = 'select-localidad';
-                inputTexto.placeholder = 'Escribe aquí tu localidad (Ej: Madrid)';
-                
-                // Reemplazamos el desplegable roto por la caja de texto
-                selectLoc.parentNode.replaceChild(inputTexto, selectLoc);
+                // Si falla todo (ej: no hay internet), dejamos el desplegable cerrado y avisamos con la ventana bonita.
+                selectLoc.innerHTML = '<option value="">Error. Elige la provincia de nuevo.</option>';
+                selectLoc.disabled = true;
+                mostrarAviso("No se han podido descargar las localidades. Comprueba tu conexión a internet y vuelve a seleccionar la provincia para reintentarlo.", "Error de conexión");
             }
         } else {
+            selectLoc.disabled = true;
             selectLoc.innerHTML = '<option value="">Primero elige una Provincia...</option>';
         }
     });
