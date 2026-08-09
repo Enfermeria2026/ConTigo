@@ -40,61 +40,64 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2. LOS CONTACTOS FAVORITOS ---
     const btnFav1 = document.getElementById('btn-fav1');
     const btnFav2 = document.getElementById('btn-fav2');
-    let botonSeleccionado = null; // Memoria para saber si tocamos el botón 1 o el 2
+    let botonSeleccionado = null; 
 
-    // Función para dibujar los botones según si tienen datos o están vacíos
+    // Plantilla para que el nombre quede arriba, el número abajo, y NO rompa el botón
+    function crearHtmlBoton(nombre, telefono) {
+        return `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; overflow:hidden;">
+                <strong style="font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${nombre}</strong>
+                <span style="font-size: 1rem; opacity: 0.8; margin-top: 2px;">${telefono}</span>
+            </div>
+        `;
+    }
+
     function pintarBotonesFavoritos() {
         if (usuario.fav1) {
-            btnFav1.innerHTML = `<strong>${usuario.fav1.nombre}</strong><br><span style="font-size: 1.1rem; opacity: 0.8;">${usuario.fav1.telefono}</span>`;
+            btnFav1.innerHTML = crearHtmlBoton(usuario.fav1.nombre, usuario.fav1.telefono);
             btnFav1.style.backgroundColor = "var(--pastel-azul)";
         } else {
-            btnFav1.innerHTML = `+ Añadir<br>contacto favorito`;
-            btnFav1.style.backgroundColor = ""; // Color original
+            btnFav1.innerHTML = `+ Añadir<br>contacto`;
+            btnFav1.style.backgroundColor = ""; 
         }
 
         if (usuario.fav2) {
-            btnFav2.innerHTML = `<strong>${usuario.fav2.nombre}</strong><br><span style="font-size: 1.1rem; opacity: 0.8;">${usuario.fav2.telefono}</span>`;
+            btnFav2.innerHTML = crearHtmlBoton(usuario.fav2.nombre, usuario.fav2.telefono);
             btnFav2.style.backgroundColor = "var(--pastel-verde)";
         } else {
-            btnFav2.innerHTML = `+ Añadir<br>contacto favorito`;
+            btnFav2.innerHTML = `+ Añadir<br>contacto`;
             btnFav2.style.backgroundColor = "";
         }
     }
-    pintarBotonesFavoritos(); // Los pintamos al entrar
+    pintarBotonesFavoritos();
 
-    // Clic en los botones principales
     function gestionarClicFavorito(num) {
         botonSeleccionado = num;
         const datosContacto = num === 1 ? usuario.fav1 : usuario.fav2;
         
         if (datosContacto) {
-            // Si ya hay alguien, abrimos opciones
             document.getElementById('titulo-opciones-fav').innerText = datosContacto.nombre;
             document.getElementById('modal-opciones-fav').classList.remove('oculto');
         } else {
-            // Si está vacío, abrimos el formulario limpio
             abrirFormularioFavorito();
         }
     }
     btnFav1.addEventListener('click', () => gestionarClicFavorito(1));
     btnFav2.addEventListener('click', () => gestionarClicFavorito(2));
 
-    // --- 3. FUNCIONES DE LAS VENTANAS ---
+    // --- 3. FUNCIONES DE LAS VENTANAS Y AGENDA ---
     const modalOpciones = document.getElementById('modal-opciones-fav');
     const modalFormulario = document.getElementById('modal-formulario-fav');
 
-    // Botones de cancelar para cerrar ventanas
     document.getElementById('btn-opcion-cancelar').onclick = () => modalOpciones.classList.add('oculto');
     document.getElementById('btn-cancelar-formulario-fav').onclick = () => modalFormulario.classList.add('oculto');
 
-    // Botón Llamar
     document.getElementById('btn-opcion-llamar').onclick = () => {
         const telefono = botonSeleccionado === 1 ? usuario.fav1.telefono : usuario.fav2.telefono;
         window.location.href = `tel:${telefono}`;
         modalOpciones.classList.add('oculto');
     };
 
-    // Botón Editar
     function abrirFormularioFavorito() {
         const datosContacto = botonSeleccionado === 1 ? usuario.fav1 : usuario.fav2;
         document.getElementById('titulo-formulario-fav').innerText = datosContacto ? "Editar Contacto" : "Añadir Contacto";
@@ -107,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('btn-opcion-editar').onclick = abrirFormularioFavorito;
 
-    // Botón Eliminar
     document.getElementById('btn-opcion-eliminar').onclick = async () => {
         document.getElementById('btn-opcion-eliminar').innerText = "Borrando...";
         if (botonSeleccionado === 1) delete usuario.fav1;
@@ -120,19 +122,55 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOpciones.classList.add('oculto');
     };
 
-    // Botón Guardar
+    // --- CONEXIÓN CON LA AGENDA DEL MÓVIL ---
+    const btnAgenda = document.getElementById('btn-agenda-fav');
+    // Si el móvil permite leer la agenda (Android), activamos el botón
+    if ('contacts' in navigator && 'ContactsManager' in window) {
+        btnAgenda.onclick = async () => {
+            try {
+                const contactos = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+                if (contactos.length > 0) {
+                    const nombreElegido = contactos[0].name[0] || '';
+                    let tlfElegido = contactos[0].tel[0] || '';
+                    // Limpiamos el teléfono (+34, espacios, guiones)
+                    tlfElegido = tlfElegido.replace('+34', '').replace(/[\s-]/g, '');
+                    
+                    document.getElementById('input-fav-nombre').value = nombreElegido;
+                    document.getElementById('input-fav-tel').value = tlfElegido;
+                }
+            } catch (error) {
+                console.log("Acceso a la agenda cancelado o denegado.");
+            }
+        };
+    } else {
+        // Si el móvil lo bloquea (iPhone), ocultamos el botón para no confundir
+        btnAgenda.style.display = 'none';
+    }
+
+    // --- GUARDAR CON VERIFICACIÓN DE 9 DÍGITOS ---
     document.getElementById('btn-guardar-fav').onclick = async () => {
         const nombre = document.getElementById('input-fav-nombre').value.trim();
-        const tel = document.getElementById('input-fav-tel').value.trim();
+        const telRoto = document.getElementById('input-fav-tel').value.trim();
         const msgError = document.getElementById('error-fav');
 
-        if (!nombre || !tel) {
+        // Quitamos espacios por si escriben "600 12 34 56"
+        const telLimpio = telRoto.replace(/\s+/g, '');
+
+        if (!nombre || !telLimpio) {
+            msgError.innerText = "Por favor, rellena el nombre y el teléfono.";
+            msgError.classList.remove('oculto');
+            return;
+        }
+
+        // Comprobamos que sean exactamente 9 números y no letras
+        if (telLimpio.length !== 9 || isNaN(telLimpio)) {
+            msgError.innerText = "El teléfono debe tener 9 números exactos.";
             msgError.classList.remove('oculto');
             return;
         }
 
         document.getElementById('btn-guardar-fav').innerText = "Guardando...";
-        const contacto = { nombre: nombre, telefono: tel };
+        const contacto = { nombre: nombre, telefono: telLimpio };
         if (botonSeleccionado === 1) usuario.fav1 = contacto;
         else usuario.fav2 = contacto;
 
