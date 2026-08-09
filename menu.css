@@ -163,6 +163,26 @@ footer {
 .marca-verde {
     font-weight: bold;
 }
+.grupo-botones-footer {
+    display: flex;
+    gap: 15px; /* Separación entre el botón perfil y salir */
+    align-items: center;
+}
+.btn-perfil {
+    background-color: var(--pastel-azul); /* Color suavecito */
+    border: none;
+    border-radius: 12px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.btn-perfil img {
+    width: 25px;
+}
 .btn-salir {
     background-color: var(--rojo-pasion);
     color: white;
