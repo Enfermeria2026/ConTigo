@@ -259,3 +259,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// --- 9. SISTEMA DE AVISOS PERSONALIZADO ---
+    const modalAviso = document.getElementById('modal-aviso-perfil');
+    const tituloAviso = document.getElementById('titulo-aviso');
+    const textoAviso = document.getElementById('texto-aviso');
+    const btnCerrarAviso = document.getElementById('btn-cerrar-aviso');
+
+    function mostrarAviso(mensaje, titulo = "Aviso") {
+        if (tituloAviso) tituloAviso.innerText = titulo;
+        if (textoAviso) textoAviso.innerHTML = mensaje;
+        if (modalAviso) modalAviso.classList.remove('oculto');
+    }
+
+    if (btnCerrarAviso) {
+        btnCerrarAviso.addEventListener('click', () => {
+            modalAviso.classList.add('oculto');
+        });
+    }
