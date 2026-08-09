@@ -104,9 +104,19 @@ async function guardarUsuarioEnBaseDeDatos(datos) {
         datos.fecha_registro_sistema = Timestamp.now();
 
         await addDoc(collection(db, "usuarios"), datos);
+        
+        // --- NUEVO: INICIO DE SESIÓN AUTOMÁTICO Y ETIQUETA DE TUTORIAL ---
+        // 1. Guardamos sus datos en la memoria para que ya esté logueado
+        localStorage.setItem('usuarioContigo', JSON.stringify(datos));
+        // 2. Le ponemos la etiqueta invisible para que el menú sepa que es nuevo
+        localStorage.setItem('necesitaTutorial', 'true');
+
         datosTemporalesRegistro = null;
         esHomonimoConfirmado = false;
-        mostrarAviso("¡Registro completado con éxito! Ahora puedes entrar a tu cuenta.", true);
+        
+        // 3. Lo enviamos directamente al menú (ya no le sale el aviso de tener que entrar a mano)
+        window.location.href = 'menu.html';
+        
     } catch (e) { 
         mostrarAviso("Hubo un error al guardar los datos de conexión."); 
     }
