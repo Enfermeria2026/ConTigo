@@ -38,6 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarFelicitacion(usuario.nombre, edad);
         }
     }
+
+// Botón Perfil
+    const btnPerfil = document.getElementById('btn-perfil');
+    if (btnPerfil) {
+        btnPerfil.addEventListener('click', () => {
+            window.location.href = 'perfil.html';
+        });
+    }
+    
     // Botón Salir
     const btnSalir = document.getElementById('btn-salir');
     if (btnSalir) {
