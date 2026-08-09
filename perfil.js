@@ -274,7 +274,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const textoAviso = document.getElementById('texto-aviso');
     const btnCerrarAviso = document.getElementById('btn-cerrar-aviso');
 
-    function mostrarAviso(mensaje, titulo = "Aviso") {
+    let redireccionarDespues = false; // <-- NUEVA MEMORIA PARA EL BOTÓN
+
+    function mostrarAviso(mensaje, titulo = "Aviso", redirigir = false) {
+        redireccionarDespues = redirigir;
         if (tituloAviso) tituloAviso.innerText = titulo;
         if (textoAviso) textoAviso.innerHTML = mensaje;
         if (modalAviso) modalAviso.classList.remove('oculto');
@@ -283,5 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCerrarAviso) {
         btnCerrarAviso.addEventListener('click', () => {
             modalAviso.classList.add('oculto');
+            // Si le hemos dicho que redirija, lo manda al menú al pulsar "Entendido"
+            if (redireccionarDespues) {
+                window.location.href = 'menu.html';
+            }
         });
     }
