@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-  // Cuando cambias de Provincia... (SOLUCIÓN DEFINITIVA SÓLO DESPLEGABLE)
+    // Cuando cambias de Provincia... (AHORA SÍ, VERSIÓN 3 OFICIAL ACTUALIZADA)
     selectProvincia.addEventListener('change', async () => {
         const selectLoc = document.getElementById('select-localidad');
         
@@ -100,15 +100,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectProvincia.value !== "") {
             const opcionElegida = selectProvincia.options[selectProvincia.selectedIndex];
             const idProvincia = opcionElegida.dataset.id;
-            const urlOficial = `https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`;
+            
+            // LA NUEVA RUTA OFICIAL V3 (¡Ese era el error!)
+            const urlOficial = `https://api.el-tiempo.net/json/v3/provincias/${idProvincia}/municipios`;
             
             try {
+                // Intentamos conectar por la ruta principal (Instantánea)
                 let respuesta;
                 try {
-                    // Intento 1: Conexión directa (Instantánea)
                     respuesta = await fetch(urlOficial);
-                } catch (errorCors) {
-                    // Intento 2: Si el navegador bloquea la directa, usamos el puente en modo "RAW" (Ultra rápido)
+                } catch(e) {
+                    // Si estás probando desde el ordenador y tu antivirus lo bloquea, usamos un puente ultrarrápido
                     const urlPuente = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlOficial)}`;
                     respuesta = await fetch(urlPuente);
                 }
@@ -117,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 selectLoc.innerHTML = '<option value="">Selecciona tu localidad...</option>';
                 
-                // Rellenamos el desplegable
+                // Rellenamos el desplegable con la nueva versión
                 if (datos.municipios && datos.municipios.length > 0) {
                     datos.municipios.forEach(muni => {
                         const opcion = document.createElement('option');
@@ -127,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     selectLoc.disabled = false; // Activamos el desplegable
                 } else {
-                    throw new Error("Datos vacíos"); // Forzamos el error si no hay pueblos
+                    throw new Error("Datos vacíos");
                 }
                 
             } catch (error) {
-                // Si falla todo (ej: no hay internet), dejamos el desplegable cerrado y avisamos con la ventana bonita.
+                // Si todo falla (ej: te quedas sin WiFi real)
                 selectLoc.innerHTML = '<option value="">Error. Elige la provincia de nuevo.</option>';
                 selectLoc.disabled = true;
                 mostrarAviso("No se han podido descargar las localidades. Comprueba tu conexión a internet y vuelve a seleccionar la provincia para reintentarlo.", "Error de conexión");
