@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-   // Cuando cambias de Provincia... (AQUÍ OCURRE LA MAGIA DE LA API)
+   // Cuando cambias de Provincia... (AHORA CON PUENTE SEGURO)
     selectProvincia.addEventListener('change', async () => {
         selectLocalidad.innerHTML = '<option value="">Cargando pueblos...</option>';
         
@@ -99,26 +99,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const idProvincia = opcionElegida.dataset.id;
             
             try {
-                // Usamos una nueva API gubernamental más estable y permisiva
-                const respuesta = await fetch(`https://apiv1.geoapi.es/municipios?CPRO=${idProvincia}&type=JSON&key=&sandbox=1`);
-                const datos = await respuesta.json();
+                // 1. Preparamos la dirección de la base de datos oficial
+                const urlOficial = encodeURIComponent(`https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`);
+                
+                // 2. Usamos el Puente Seguro (AllOrigins) para evitar el bloqueo del navegador
+                const respuesta = await fetch(`https://api.allorigins.win/get?url=${urlOficial}`);
+                const datosPuente = await respuesta.json();
+                
+                // 3. Traducimos lo que nos ha traído el puente
+                const datosReales = JSON.parse(datosPuente.contents);
                 
                 selectLocalidad.innerHTML = '<option value="">Selecciona tu localidad...</option>';
                 
-                // Rellenamos el desplegable con los datos
-                if (datos.data) {
-                    datos.data.forEach(muni => {
+                // 4. Llenamos el desplegable
+                if (datosReales.municipios) {
+                    datosReales.municipios.forEach(muni => {
                         const opcion = document.createElement('option');
-                        opcion.value = muni.MUNI;
-                        opcion.innerText = muni.MUNI;
+                        opcion.value = muni.NOMBRE;
+                        opcion.innerText = muni.NOMBRE;
                         selectLocalidad.appendChild(opcion);
                     });
+                    selectLocalidad.disabled = false;
+                } else {
+                    selectLocalidad.innerHTML = '<option value="">Error al cargar los pueblos</option>';
+                    selectLocalidad.disabled = true;
                 }
-                selectLocalidad.disabled = false;
                 
             } catch (error) {
-                // Si algo falla, NO lo convertimos en texto, simplemente mostramos un aviso en el desplegable
-                selectLocalidad.innerHTML = '<option value="">Error al descargar pueblos. Reintenta.</option>';
+                // Si aún así falla (por ejemplo, si te quedas sin WiFi)
+                selectLocalidad.innerHTML = '<option value="">Error de conexión. Reintenta.</option>';
                 selectLocalidad.disabled = true;
             }
         } else {
