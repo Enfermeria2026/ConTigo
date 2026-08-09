@@ -90,52 +90,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-   // Cuando cambias de Provincia... (AHORA CON PUENTE SEGURO)
+  // Cuando cambias de Provincia... (LA SOLUCIÓN DEFINITIVA)
     selectProvincia.addEventListener('change', async () => {
-        selectLocalidad.innerHTML = '<option value="">Cargando pueblos...</option>';
+        let selectLoc = document.getElementById('select-localidad');
+        
+        // Si antes se transformó en un input de texto por un fallo, lo restauramos a select
+        if (selectLoc.tagName === 'INPUT') {
+            const nuevoSelect = document.createElement('select');
+            nuevoSelect.id = 'select-localidad';
+            selectLoc.parentNode.replaceChild(nuevoSelect, selectLoc);
+            selectLoc = nuevoSelect; // Actualizamos la referencia
+        }
+
+        selectLoc.innerHTML = '<option value="">Cargando pueblos...</option>';
+        selectLoc.disabled = true;
         
         if (selectProvincia.value !== "") {
             const opcionElegida = selectProvincia.options[selectProvincia.selectedIndex];
             const idProvincia = opcionElegida.dataset.id;
             
             try {
-                // 1. Preparamos la dirección de la base de datos oficial
-                const urlOficial = encodeURIComponent(`https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`);
+                // Usamos CodeTabs, un proxy amigable para desarrollo local que no bloquea
+                const url = `https://www.el-tiempo.net/api/json/v2/provincias/${idProvincia}/municipios`;
+                const respuesta = await fetch(`https://api.codetabs.com/v1/proxy?quest=${url}`);
+                const datos = await respuesta.json();
                 
-                // 2. Usamos el Puente Seguro (AllOrigins) para evitar el bloqueo del navegador
-                const respuesta = await fetch(`https://api.allorigins.win/get?url=${urlOficial}`);
-                const datosPuente = await respuesta.json();
+                selectLoc.innerHTML = '<option value="">Selecciona tu localidad...</option>';
                 
-                // 3. Traducimos lo que nos ha traído el puente
-                const datosReales = JSON.parse(datosPuente.contents);
-                
-                selectLocalidad.innerHTML = '<option value="">Selecciona tu localidad...</option>';
-                
-                // 4. Llenamos el desplegable
-                if (datosReales.municipios) {
-                    datosReales.municipios.forEach(muni => {
+                // Si la API nos devuelve datos, llenamos el desplegable
+                if (datos.municipios && datos.municipios.length > 0) {
+                    datos.municipios.forEach(muni => {
                         const opcion = document.createElement('option');
                         opcion.value = muni.NOMBRE;
                         opcion.innerText = muni.NOMBRE;
-                        selectLocalidad.appendChild(opcion);
+                        selectLoc.appendChild(opcion);
                     });
-                    selectLocalidad.disabled = false;
+                    selectLoc.disabled = false;
                 } else {
-                    selectLocalidad.innerHTML = '<option value="">Error al cargar los pueblos</option>';
-                    selectLocalidad.disabled = true;
+                    throw new Error("Datos vacíos"); // Forzamos el salto al Catch
                 }
                 
             } catch (error) {
-                // Si aún así falla (por ejemplo, si te quedas sin WiFi)
-                selectLocalidad.innerHTML = '<option value="">Error de conexión. Reintenta.</option>';
-                selectLocalidad.disabled = true;
+                console.warn("La API falló. Activando Plan B de texto libre.");
+                // PLAN B INFALIBLE: Si el internet o la base de datos fallan, 
+                // transformamos la caja en un input de texto normal para que el usuario no se quede bloqueado.
+                const inputTexto = document.createElement('input');
+                inputTexto.type = 'text';
+                inputTexto.id = 'select-localidad';
+                inputTexto.placeholder = 'Escribe aquí tu localidad (Ej: Madrid)';
+                
+                // Reemplazamos el desplegable roto por la caja de texto
+                selectLoc.parentNode.replaceChild(inputTexto, selectLoc);
             }
         } else {
-            selectLocalidad.disabled = true;
-            selectLocalidad.innerHTML = '<option value="">Primero elige una Provincia...</option>';
+            selectLoc.innerHTML = '<option value="">Primero elige una Provincia...</option>';
         }
     });
-
+    
     // 6. Lógica del Árbol Genealógico
     const btnAddFamiliar = document.getElementById('btn-añadir-familiar');
     const inputFamiliarNombre = document.getElementById('input-familiar-nombre');
