@@ -27,17 +27,26 @@ header {
     position: relative;
     margin-bottom: 20px;
 }
+
 .btn-volver {
     position: absolute;
     left: 15px;
-    top: 25px;
+    top: 50%; /* Lo bajamos al medio exacto de la cabecera... */
+    transform: translateY(-50%); /* ...y lo centramos matemáticamente */
     background: none;
     border: none;
     color: var(--verde-contigo);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: bold;
     cursor: pointer;
+    
+    /* MAGIA PARA CENTRAR LA FLECHA Y EL TEXTO */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
 }
+
 header h1 {
     margin: 0 0 5px 0;
     color: var(--verde-contigo);
