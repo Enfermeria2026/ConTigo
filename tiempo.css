@@ -1,0 +1,50 @@
+/* tiempo.css */
+.contenedor-tiempo {
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+#titulo-localidad {
+    text-align: center;
+    color: #34495E;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+.control-semanas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: #ECF0F1;
+    padding: 10px 15px;
+    border-radius: 15px;
+}
+.control-semanas h3 {
+    margin: 0; color: #2C3E50; font-size: 1.1rem;
+}
+.btn-semana {
+    background-color: var(--verde-contigo); color: white;
+    border: none; padding: 8px 12px; border-radius: 10px;
+    font-weight: bold; cursor: pointer;
+}
+.grid-dias {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.tarjeta-dia {
+    background-color: white;
+    border: 2px solid #E5E8E8;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.dia-nombre { font-size: 1.2rem; font-weight: bold; width: 30%; }
+.dia-icono { font-size: 2.5rem; text-align: center; width: 20%; }
+.dia-temps { font-size: 1.1rem; width: 30%; text-align: right; }
+.temp-max { color: #E74C3C; font-weight: bold; }
+.temp-min { color: #3498DB; font-weight: bold; }
+.dia-viento { font-size: 1rem; width: 20%; text-align: center; color: #7F8C8D; }
