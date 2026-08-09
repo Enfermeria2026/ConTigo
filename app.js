@@ -117,10 +117,13 @@ async function guardarUsuarioEnBaseDeDatos(datos) {
         // 2. Le ponemos la etiqueta invisible para que el menú sepa que es nuevo
         localStorage.setItem('necesitaTutorial', 'true');
 
+        // --- NUEVO: TICKET PARA EL CUMPLEAÑOS ---
+        localStorage.setItem('acabaDeEntrar', 'true');
+
         datosTemporalesRegistro = null;
         esHomonimoConfirmado = false;
         
-        // 3. Lo enviamos directamente al menú (ya no le sale el aviso de tener que entrar a mano)
+        // 3. Lo enviamos directamente al menú
         window.location.href = 'menu.html';
         
     } catch (e) { 
