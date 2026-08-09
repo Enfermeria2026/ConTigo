@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConTigo - El Tiempo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tiempo.css">
+</head>
+<body>
+    <header class="header-perfil">
+        <button id="btn-volver-tiempo" class="btn-volver">&larr; Volver</button>
+        <h1 style="color: var(--verde-contigo);">El Tiempo</h1>
+    </header>
+
+    <main class="contenedor-tiempo">
+        <h2 id="titulo-localidad">Cargando... 📍</h2>
+        
+        <div class="control-semanas">
+            <h3 id="texto-semana">Esta Semana</h3>
+            <button id="btn-cambiar-semana" class="btn-semana">Ver Próxima Semana &rarr;</button>
+        </div>
+
+        <div id="cargando-tiempo" style="text-align: center; margin-top: 50px; font-size: 1.2rem;">Descargando previsión... ⏳</div>
+
+        <!-- Aquí se dibujarán los 7 días (L-D) mágicamente -->
+        <div id="contenedor-dias" class="grid-dias oculto">
+            <!-- Las tarjetas se generan desde JavaScript -->
+        </div>
+    </main>
+
+    <script type="module" src="tiempo.js"></script>
+</body>
+</html>
