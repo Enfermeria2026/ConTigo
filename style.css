@@ -1,3 +1,8 @@
+/* Quita el parpadeo azul al pulsar botones en móviles */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 :root {
     --azul-marino: #002B5B;
     --verde-agua: #14B8A6;
