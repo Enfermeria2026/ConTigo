@@ -28,6 +28,140 @@ document.addEventListener('DOMContentLoaded', () => {
     const pantallaNombre = document.getElementById('nombre-pantalla');
     if (pantallaNombre) {
         pantallaNombre.innerText = `${usuario.nombre} ${usuario.apellidos}`;
+
+        // --- 1. EL BOTÓN SOS (112) ---
+    const btnSos = document.getElementById('btn-sos');
+    if (btnSos) {
+        btnSos.addEventListener('click', () => {
+            window.location.href = "tel:112";
+        });
+    }
+
+    // --- 2. LOS CONTACTOS FAVORITOS ---
+    const btnFav1 = document.getElementById('btn-fav1');
+    const btnFav2 = document.getElementById('btn-fav2');
+    let botonSeleccionado = null; // Memoria para saber si tocamos el botón 1 o el 2
+
+    // Función para dibujar los botones según si tienen datos o están vacíos
+    function pintarBotonesFavoritos() {
+        if (usuario.fav1) {
+            btnFav1.innerHTML = `<strong>${usuario.fav1.nombre}</strong><br><span style="font-size: 1.1rem; opacity: 0.8;">${usuario.fav1.telefono}</span>`;
+            btnFav1.style.backgroundColor = "var(--pastel-azul)";
+        } else {
+            btnFav1.innerHTML = `+ Añadir<br>contacto favorito`;
+            btnFav1.style.backgroundColor = ""; // Color original
+        }
+
+        if (usuario.fav2) {
+            btnFav2.innerHTML = `<strong>${usuario.fav2.nombre}</strong><br><span style="font-size: 1.1rem; opacity: 0.8;">${usuario.fav2.telefono}</span>`;
+            btnFav2.style.backgroundColor = "var(--pastel-verde)";
+        } else {
+            btnFav2.innerHTML = `+ Añadir<br>contacto favorito`;
+            btnFav2.style.backgroundColor = "";
+        }
+    }
+    pintarBotonesFavoritos(); // Los pintamos al entrar
+
+    // Clic en los botones principales
+    function gestionarClicFavorito(num) {
+        botonSeleccionado = num;
+        const datosContacto = num === 1 ? usuario.fav1 : usuario.fav2;
+        
+        if (datosContacto) {
+            // Si ya hay alguien, abrimos opciones
+            document.getElementById('titulo-opciones-fav').innerText = datosContacto.nombre;
+            document.getElementById('modal-opciones-fav').classList.remove('oculto');
+        } else {
+            // Si está vacío, abrimos el formulario limpio
+            abrirFormularioFavorito();
+        }
+    }
+    btnFav1.addEventListener('click', () => gestionarClicFavorito(1));
+    btnFav2.addEventListener('click', () => gestionarClicFavorito(2));
+
+    // --- 3. FUNCIONES DE LAS VENTANAS ---
+    const modalOpciones = document.getElementById('modal-opciones-fav');
+    const modalFormulario = document.getElementById('modal-formulario-fav');
+
+    // Botones de cancelar para cerrar ventanas
+    document.getElementById('btn-opcion-cancelar').onclick = () => modalOpciones.classList.add('oculto');
+    document.getElementById('btn-cancelar-formulario-fav').onclick = () => modalFormulario.classList.add('oculto');
+
+    // Botón Llamar
+    document.getElementById('btn-opcion-llamar').onclick = () => {
+        const telefono = botonSeleccionado === 1 ? usuario.fav1.telefono : usuario.fav2.telefono;
+        window.location.href = `tel:${telefono}`;
+        modalOpciones.classList.add('oculto');
+    };
+
+    // Botón Editar
+    function abrirFormularioFavorito() {
+        const datosContacto = botonSeleccionado === 1 ? usuario.fav1 : usuario.fav2;
+        document.getElementById('titulo-formulario-fav').innerText = datosContacto ? "Editar Contacto" : "Añadir Contacto";
+        document.getElementById('input-fav-nombre').value = datosContacto ? datosContacto.nombre : "";
+        document.getElementById('input-fav-tel').value = datosContacto ? datosContacto.telefono : "";
+        document.getElementById('error-fav').classList.add('oculto');
+        
+        modalOpciones.classList.add('oculto');
+        modalFormulario.classList.remove('oculto');
+    }
+    document.getElementById('btn-opcion-editar').onclick = abrirFormularioFavorito;
+
+    // Botón Eliminar
+    document.getElementById('btn-opcion-eliminar').onclick = async () => {
+        document.getElementById('btn-opcion-eliminar').innerText = "Borrando...";
+        if (botonSeleccionado === 1) delete usuario.fav1;
+        else delete usuario.fav2;
+        
+        await guardarFavoritoFirebase();
+        pintarBotonesFavoritos();
+        
+        document.getElementById('btn-opcion-eliminar').innerText = "🗑️ Eliminar";
+        modalOpciones.classList.add('oculto');
+    };
+
+    // Botón Guardar
+    document.getElementById('btn-guardar-fav').onclick = async () => {
+        const nombre = document.getElementById('input-fav-nombre').value.trim();
+        const tel = document.getElementById('input-fav-tel').value.trim();
+        const msgError = document.getElementById('error-fav');
+
+        if (!nombre || !tel) {
+            msgError.classList.remove('oculto');
+            return;
+        }
+
+        document.getElementById('btn-guardar-fav').innerText = "Guardando...";
+        const contacto = { nombre: nombre, telefono: tel };
+        if (botonSeleccionado === 1) usuario.fav1 = contacto;
+        else usuario.fav2 = contacto;
+
+        await guardarFavoritoFirebase();
+        pintarBotonesFavoritos();
+        
+        document.getElementById('btn-guardar-fav').innerText = "Guardar";
+        modalFormulario.classList.add('oculto');
+    };
+
+    // --- 4. GUARDAR EN FIREBASE DE FONDO ---
+    async function guardarFavoritoFirebase() {
+        try {
+            const q = query(collection(db, "usuarios"), 
+                where("identificador_normalizado", "==", usuario.identificador_normalizado)
+            );
+            const consulta = await getDocs(q);
+            if (!consulta.empty) {
+                await updateDoc(consulta.docs[0].ref, {
+                    fav1: usuario.fav1 || null,
+                    fav2: usuario.fav2 || null
+                });
+                localStorage.setItem('usuarioContigo', JSON.stringify(usuario));
+            }
+        } catch (e) {
+            console.error("Fallo al guardar", e);
+        }
+    }
+        
     }
 
     // --- FUNCIÓN DE CUMPLEAÑOS ---
