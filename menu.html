@@ -25,7 +25,8 @@
     </div>
 
     <div class="cuadricula-principal">
-        <button class="btn-app" style="background-color: var(--pastel-azul);">
+        <!-- ¡AQUÍ ESTÁ EL ID NUEVO (id="btn-tiempo")! -->
+        <button class="btn-app" id="btn-tiempo" style="background-color: var(--pastel-azul);">
             <img src="iconos/tiempo.png" alt="El tiempo"> <span>El tiempo</span>
         </button>
         <button class="btn-app" style="background-color: var(--pastel-verde);">
@@ -118,7 +119,6 @@
         <div class="contenido-tutorial">
             <h1 id="titulo-formulario-fav">Añadir Contacto</h1>
             
-            <!-- Botón de Agenda (Se ocultará solo si el móvil no es compatible) -->
             <button class="btn-tutorial" id="btn-agenda-fav" style="background-color: #3498DB; margin-bottom: 15px; font-size: 1.1rem;">📖 Elegir de mi agenda</button>
             
             <input type="text" id="input-fav-nombre" placeholder="Nombre (Ej: María)" style="width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E5E8E8; font-size: 1.2rem; margin-bottom: 15px; box-sizing: border-box;">
@@ -139,6 +139,19 @@
             <button class="btn-tutorial" id="btn-tutorial-siguiente">Siguiente</button>
         </div>
     </div>
+
+    <!-- ¡AQUÍ ESTÁ EL NUEVO MODAL DE AVISO DE LOCALIDAD! -->
+    <div id="modal-falta-localidad" class="modal-centrado oculto">
+        <div class="contenido-tutorial">
+            <h1 style="color: var(--verde-contigo); font-size: 1.6rem; margin-bottom: 10px;">¡Falta tu localidad! 📍</h1>
+            <p style="margin-bottom: 20px;">Para poder mostrarte el tiempo exacto, necesitamos saber en qué localidad vives.</p>
+            <button class="btn-tutorial" id="btn-ir-perfil-tiempo" style="background-color: var(--verde-contigo); margin-bottom: 15px;">Ir a Mi Perfil</button>
+            <button class="btn-tutorial" id="btn-cancelar-tiempo" style="background-color: #95A5A6;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- ¡AQUÍ ESTÁ LA NUEVA LLAMADA AL SCRIPT! -->
+    <script type="module" src="boton_tiempo.js"></script>
     
     <script type="module" src="menu.js"></script>
 </body>
