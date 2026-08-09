@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             {
                 titulo: "Tu Ubicación 📍",
-                texto: "La Comunidad, Provincia y Localidad son <b>obligatorias</b>. Necesitamos saber dónde estás para que puedan funcionar botones como 'Farmacias' o 'El Tiempo'."
+                texto: "La Comunidad, Provincia y Localidad son <b>obligatorias</b>. Necesitamos saber dónde estás para que puedan funcionar botones como 'Farmacias de guardia' o 'Eventos cerca de ti'."
             },
             {
                 titulo: "Sobre Mí ✨",
