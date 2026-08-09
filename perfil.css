@@ -1,4 +1,10 @@
 /* perfil.css */
+
+/* Quita el parpadeo azul al pulsar en móviles */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 :root {
     --verde-contigo: #14B8A6;
     --fondo-app: #F5F7FA;
