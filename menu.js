@@ -141,7 +141,7 @@ function iniciarTutorial() {
         },
         {
             titulo: "Último paso: Tu Perfil 👤",
-            texto: "Para que funcionen cosas como 'Transporte Local', 'Farmacias de guardia' o 'Eventos cerca de ti', necesitamos saber la localidad en la que vives. <b>Vamos a ir a tu Perfil para rellenar esos datos</b>. ¡Es muy fácil!"
+            texto: "Para que funcionen cosas como 'Transporte Local', 'Farmacias de guardia' o 'Eventos cerca de ti', necesitamos saber dónde vives. <b>Vamos a ir a tu Perfil para rellenar esos datos</b>. ¡Es muy fácil!"
         }
     ];
 
@@ -161,7 +161,7 @@ function iniciarTutorial() {
         
         if (pasoActual === pasos.length - 1) {
             btnSiguienteTut.innerText = "¡Ir a mi perfil!";
-            btnSiguienteTut.style.backgroundColor = "#F39C12"; // Naranja para que destaque
+            btnSiguienteTut.style.backgroundColor = "#F39C12"; 
             btnSiguienteTut.style.color = "white";
         } else {
             btnSiguienteTut.innerText = "Siguiente";
@@ -171,7 +171,8 @@ function iniciarTutorial() {
     modalTut.classList.remove('oculto');
     mostrarPaso();
 
-   btnSiguienteTut.addEventListener('click', () => {
+    // AQUÍ ESTÁ LA CLAVE: Usamos onclick para machacar cualquier orden antigua
+    btnSiguienteTut.onclick = () => {
         if (pasoActual < pasos.length - 1) {
             pasoActual++;
             mostrarPaso();
@@ -183,5 +184,5 @@ function iniciarTutorial() {
             // 3. Vamos al perfil
             window.location.replace('perfil.html');
         }
-    });
+    };
 }
