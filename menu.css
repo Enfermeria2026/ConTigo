@@ -169,19 +169,20 @@ footer {
     align-items: center;
 }
 .btn-perfil {
-    background-color: var(--pastel-azul); /* Color suavecito */
+    background-color: transparent; /* Hacemos el fondo totalmente invisible */
     border: none;
-    border-radius: 12px;
     width: 45px;
     height: 45px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: none; /* Quitamos la sombra */
+    padding: 0;
 }
+
 .btn-perfil img {
-    width: 25px;
+    width: 35px; /* Hacemos el icono un poco más grande para que sea fácil de pulsar con el dedo */
 }
 .btn-salir {
     background-color: var(--rojo-pasion);
