@@ -182,7 +182,7 @@ footer {
 }
 
 .btn-perfil img {
-    width: 35px; /* Hacemos el icono un poco más grande para que sea fácil de pulsar con el dedo */
+    width: 50px; /* Hacemos el icono un poco más grande para que sea fácil de pulsar con el dedo */
 }
 .btn-salir {
     background-color: var(--rojo-pasion);
