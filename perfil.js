@@ -62,13 +62,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectProvincia = document.getElementById('select-provincia');
     const selectLocalidad = document.getElementById('select-localidad');
 
-    // Llenar CCAA
+  // Llenar CCAA
     Object.keys(datosEspana).forEach(ccaa => {
         const opcion = document.createElement('option');
         opcion.value = ccaa;
         opcion.innerText = ccaa;
         selectCcaa.appendChild(opcion);
     });
+
+    // --- NUEVO: RESTAURAR DATOS GUARDADOS DE UBICACIÓN ---
+    if (usuario.ccaa) {
+        selectCcaa.value = usuario.ccaa;
+        selectCcaa.dispatchEvent(new Event('change')); // Hace como si hiciéramos clic para cargar provincias
+        
+        setTimeout(() => {
+            if (usuario.provincia) {
+                selectProvincia.value = usuario.provincia;
+                selectProvincia.dispatchEvent(new Event('change')); // Hace clic para descargar los pueblos
+                
+                // Le damos 1 segundo al internet para bajar los pueblos y luego lo seleccionamos
+                setTimeout(() => {
+                    const selectLoc = document.getElementById('select-localidad');
+                    if (usuario.localidad && selectLoc) {
+                        selectLoc.value = usuario.localidad;
+                    }
+                }, 1000);
+            }
+        }, 100);
+    }
 
     // Cuando cambias de CCAA...
     selectCcaa.addEventListener('change', () => {
@@ -248,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 usuario.arbol_genealogico = arbolFamiliar;
                 localStorage.setItem('usuarioContigo', JSON.stringify(usuario));
 
-                mostrarAviso("✅ ¡Perfil actualizado correctamente!");
+                mostrarAviso("✅ ¡Perfil actualizado correctamente!", true);
             }
         } catch (error) {
             mostrarAviso("❌ Hubo un error al guardar. Revisa tu conexión a internet.");
