@@ -102,6 +102,29 @@
         </div>
     </div>
 
+    <!-- Modal 1: Opciones del Contacto Favorito (Llamar, Editar, Eliminar) -->
+    <div id="modal-opciones-fav" class="modal-tutorial oculto">
+        <div class="contenido-tutorial">
+            <h1 id="titulo-opciones-fav">Nombre</h1>
+            <button class="btn-tutorial" id="btn-opcion-llamar" style="background-color: #2ECC71; margin-bottom: 15px;">📞 Llamar</button>
+            <button class="btn-tutorial" id="btn-opcion-editar" style="background-color: #F39C12; margin-bottom: 15px;">✏️ Editar</button>
+            <button class="btn-tutorial" id="btn-opcion-eliminar" style="background-color: #E74C3C; margin-bottom: 15px;">🗑️ Eliminar</button>
+            <button class="btn-tutorial" id="btn-opcion-cancelar" style="background-color: #95A5A6;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal 2: Formulario para Añadir o Editar Contacto -->
+    <div id="modal-formulario-fav" class="modal-tutorial oculto">
+        <div class="contenido-tutorial">
+            <h1 id="titulo-formulario-fav">Añadir Contacto</h1>
+            <input type="text" id="input-fav-nombre" placeholder="Nombre (Ej: María)" style="width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E5E8E8; font-size: 1.2rem; margin-bottom: 15px; box-sizing: border-box;">
+            <input type="tel" id="input-fav-tel" placeholder="Teléfono (Ej: 600123456)" style="width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E5E8E8; font-size: 1.2rem; margin-bottom: 10px; box-sizing: border-box;">
+            <p id="error-fav" style="color: #E74C3C; font-size: 0.9rem; margin-top: 0;" class="oculto">Rellena ambos campos.</p>
+            <button class="btn-tutorial" id="btn-guardar-fav" style="margin-bottom: 15px;">Guardar</button>
+            <button class="btn-tutorial" id="btn-cancelar-formulario-fav" style="background-color: #95A5A6;">Cancelar</button>
+        </div>
+    </div>
+    
     <!-- Modal del Tutorial Guiado -->
     <div id="modal-tutorial" class="modal-tutorial oculto">
         <div class="contenido-tutorial">
