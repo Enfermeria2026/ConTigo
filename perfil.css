@@ -1,0 +1,148 @@
+/* perfil.css */
+:root {
+    --verde-contigo: #14B8A6;
+    --fondo-app: #F5F7FA;
+    --texto-oscuro: #2C3E50;
+    --gris-claro: #E5E8E8;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: var(--fondo-app);
+    color: var(--texto-oscuro);
+    padding-bottom: 40px;
+}
+
+/* Cabecera */
+header {
+    background-color: white;
+    padding: 20px 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    text-align: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+.btn-volver {
+    position: absolute;
+    left: 15px;
+    top: 25px;
+    background: none;
+    border: none;
+    color: var(--verde-contigo);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+header h1 {
+    margin: 0 0 5px 0;
+    color: var(--verde-contigo);
+    font-size: 2rem;
+}
+.subtitulo {
+    margin: 0;
+    color: #7F8C8D;
+    font-size: 1.1rem;
+}
+
+/* Tarjetas de Secciones */
+main {
+    padding: 0 15px;
+}
+.tarjeta {
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+}
+.tarjeta h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    border-bottom: 2px solid var(--gris-claro);
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.etiqueta-obligatorio { font-size: 0.9rem; color: #E74C3C; font-weight: normal; }
+.etiqueta-opcional { font-size: 0.9rem; color: #95A5A6; font-weight: normal; }
+
+/* Formularios */
+label {
+    display: block;
+    font-weight: bold;
+    margin: 15px 0 8px 0;
+    font-size: 1.15rem;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--gris-claro);
+    border-radius: 12px;
+    font-size: 1.15rem;
+    background-color: white;
+}
+textarea { resize: vertical; }
+
+/* Efecto de input bloqueado (Gris) */
+.input-bloqueado {
+    background-color: #F8F9F9;
+    color: #7F8C8D;
+    border-color: transparent;
+    pointer-events: none;
+}
+
+/* Selector deshabilitado (cuando aún no eliges CCAA) */
+select:disabled {
+    background-color: #F2F3F4;
+    color: #BDC3C7;
+}
+
+/* Árbol Genealógico */
+.info-arbol { font-size: 1.1rem; color: #555; margin-bottom: 15px; }
+.caja-añadir-familiar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #F8F9F9;
+    padding: 15px;
+    border-radius: 15px;
+    border: 2px dashed #BDC3C7;
+}
+.btn-añadir {
+    background-color: var(--verde-contigo);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.contenedor-arbol {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botón Guardar Final */
+.btn-guardar {
+    width: 100%;
+    background-color: var(--verde-contigo);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(20, 184, 166, 0.3);
+    margin-top: 10px;
+}
