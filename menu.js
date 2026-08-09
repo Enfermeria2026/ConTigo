@@ -114,3 +114,72 @@ function dispararAnimacionConfeti() {
         }));
     }, 250);
 }
+
+// --- TUTORIAL GUIADO PARA USUARIOS NUEVOS ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Comprobamos si el usuario es nuevo
+    const necesitaTutorial = localStorage.getItem('necesitaTutorial');
+    
+    if (necesitaTutorial === 'true') {
+        iniciarTutorial();
+    }
+});
+
+function iniciarTutorial() {
+    const pasos = [
+        {
+            titulo: "¡Bienvenido/a a ConTigo! 👋",
+            texto: "Esta es tu nueva aplicación. Está diseñada para ser muy fácil de usar. Puedes ver todo lo que hay en la pantalla <b>deslizando tu dedo hacia arriba o hacia abajo</b>."
+        },
+        {
+            titulo: "Tus Aplicaciones 📱",
+            texto: "Aquí tienes botones grandes de colores. Cada botón hace una cosa: ver el tiempo, leer la prensa... Solo tienes que <b>tocar el que quieras usar</b>."
+        },
+        {
+            titulo: "Emergencias y Familia 🚨",
+            texto: "Arriba del todo tienes botones para añadir a tus familiares favoritos y un <b>botón ROJO de Emergencias</b> que te conectará rápido si necesitas ayuda urgente."
+        },
+        {
+            titulo: "Último paso: Tu Perfil 👤",
+            texto: "Para que funcionen cosas como 'El tiempo' o 'Farmacias', necesitamos saber dónde vives. <b>Vamos a ir a tu Perfil para rellenar esos datos</b>. ¡Es muy fácil!"
+        }
+    ];
+
+    let pasoActual = 0;
+    const modalTut = document.getElementById('modal-tutorial');
+    const tituloTut = document.getElementById('tutorial-titulo');
+    const textoTut = document.getElementById('tutorial-texto');
+    const indicadorTut = document.getElementById('tutorial-indicador');
+    const btnSiguienteTut = document.getElementById('btn-tutorial-siguiente');
+
+    if (!modalTut) return;
+
+    function mostrarPaso() {
+        tituloTut.innerText = pasos[pasoActual].titulo;
+        textoTut.innerHTML = pasos[pasoActual].texto;
+        indicadorTut.innerText = `Paso ${pasoActual + 1} de ${pasos.length}`;
+        
+        if (pasoActual === pasos.length - 1) {
+            btnSiguienteTut.innerText = "¡Ir a mi perfil!";
+            btnSiguienteTut.style.backgroundColor = "#F39C12"; // Naranja para que destaque
+            btnSiguienteTut.style.color = "white";
+        } else {
+            btnSiguienteTut.innerText = "Siguiente";
+        }
+    }
+
+    modalTut.classList.remove('oculto');
+    mostrarPaso();
+
+    btnSiguienteTut.addEventListener('click', () => {
+        if (pasoActual < pasos.length - 1) {
+            pasoActual++;
+            mostrarPaso();
+        } else {
+            // Fin del tutorial: Borramos la etiqueta para que no vuelva a salir
+            localStorage.removeItem('necesitaTutorial');
+            // Obligamos a ir a la pantalla de Perfil de forma directa
+            window.location.replace('perfil.html');
+        }
+    });
+}
