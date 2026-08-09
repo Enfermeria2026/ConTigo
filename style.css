@@ -121,3 +121,14 @@ button {
 #pantalla-login {
     margin-top: 10vh; /* Ajusta este número a tu gusto */
 }
+
+/* --- EFECTO DE PULSACIÓN NATIVA PARA TODOS LOS BOTONES --- */
+button {
+    /* Le decimos que cualquier cambio de tamaño lo haga de forma suave (0.1 segundos) */
+    transition: transform 0.1s ease-in-out;
+}
+
+button:active {
+    /* Al pulsar (:active), reducimos su tamaño al 95% para simular que se hunde */
+    transform: scale(0.95);
+}
