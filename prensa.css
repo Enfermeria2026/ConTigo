@@ -172,3 +172,8 @@ body {
     width: 100%;
     margin-top: 10px;
 }
+
+/* --- TRUCO PARA QUE EL ÚLTIMO BOTÓN NO SE CORTE NUNCA --- */
+.tarjeta-periodico:last-child {
+    margin-bottom: 80px; /* Obliga a dejar un hueco grande debajo del último periódico */
+}
