@@ -1,4 +1,4 @@
-// tiempo.js - VERSIÓN EUROPEA ECMWF (Modelo base de AEMET) + Filtro inteligente
+// tiempo.js - VERSIÓN DEFINITIVA (Datos completos + Filtro Cartagena)
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // --- 2. LÓGICA DE DATOS OFICIALES ---
+    // --- 2. LÓGICA DE DATOS Y FILTRO INTELIGENTE ---
     const usuarioRecuperado = localStorage.getItem('usuarioContigo');
     if (!usuarioRecuperado) { window.location.href = 'index.html'; return; }
     const usuario = JSON.parse(usuarioRecuperado);
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function cargarDatos() {
         const contenedor = document.getElementById('contenedor-dias');
-        if(contenedor) contenedor.innerHTML = "<div style='padding:20px; text-align:center; font-weight:bold; color:#2C3E50;'>Conectando con el satélite europeo... ⏳</div>";
+        if(contenedor) contenedor.innerHTML = "<div style='padding:20px; text-align:center; font-weight:bold; color:#2C3E50;'>Cargando previsión... ⏳</div>";
 
         // Ocultamos el botón naranja porque usamos scroll
         const btnCambiar = document.getElementById('btn-cambiar-semana');
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(estadoTxt) estadoTxt.innerText = "Previsión de los próximos 7 días";
 
         try {
-            // A. Buscamos coordenadas (Conexión 100% segura y permitida)
+            // A. Buscamos coordenadas 
             const resGeo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(usuario.localidad)}&count=1&language=es`);
             const geo = await resGeo.json();
             
@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const { latitude, longitude } = geo.results[0];
 
-            // B. Pedimos los datos al MODELO EUROPEO (ECMWF) incluyendo "Probabilidad de lluvia"
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,precipitation_probability_max&timezone=Europe/Madrid&models=ecmwf_ifs04`);
+            // B. Petición ESTÁNDAR (Garantiza que lleguen temperaturas y viento) + Probabilidad de lluvia
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,precipitation_probability_max&timezone=Europe/Madrid`);
             const data = await res.json();
 
             contenedor.innerHTML = "";
@@ -67,29 +67,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 const probabilidadLluvia = data.daily.precipitation_probability_max[i] || 0;
                 let codigo = data.daily.weathercode[i];
 
-                // --- EL FILTRO "CARTAGENA" ---
-                // Si el satélite dice lluvia (códigos 50 para arriba) pero la probabilidad real es menor del 30%...
+                // --- EL FILTRO "CARTAGENA" (Nuestra corrección inteligente) ---
+                // Si la máquina dice que llueve (código >= 50) pero la probabilidad real es menor al 30%...
                 // ...corregimos a la máquina y forzamos el icono de "Nublado" (código 3).
                 if (codigo >= 50 && probabilidadLluvia < 30) {
                     codigo = 3; 
                 }
 
-                // Selección de Iconos tras pasar por el filtro
+                // Selección de Iconos
                 let icono = "☀️";
                 if (codigo === 1 || codigo === 2) icono = "⛅"; 
                 else if (codigo === 3) icono = "☁️"; 
-                else if (codigo >= 45 && codigo <= 48) icono = "🌫️"; // Niebla
-                else if (codigo >= 51 && codigo <= 67) icono = "🌧️"; // Lluvia
-                else if (codigo >= 71 && codigo <= 77) icono = "❄️"; // Nieve
-                else if (codigo >= 80 && codigo <= 82) icono = "🌧️"; // Chubascos
-                else if (codigo >= 95) icono = "⛈️"; // Tormenta
+                else if (codigo >= 45 && codigo <= 48) icono = "🌫️"; 
+                else if (codigo >= 51 && codigo <= 67) icono = "🌧️"; 
+                else if (codigo >= 71 && codigo <= 77) icono = "❄️"; 
+                else if (codigo >= 80 && codigo <= 82) icono = "🌧️"; 
+                else if (codigo >= 95) icono = "⛈️"; 
 
-                // Olas de viento
+                // Olas de viento (Tus reglas)
                 let rayas = "〰️";
                 if (viento >= 20 && viento <= 38) rayas = "〰️<br>〰️";
                 else if (viento >= 39) rayas = "〰️<br>〰️<br>〰️";
 
-                // Fechas
+                // Fechas (DD/MM)
                 const fechaObjeto = new Date(data.daily.time[i]);
                 let nombreDia = fechaObjeto.toLocaleDateString('es-ES', {weekday: 'long'});
                 nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
