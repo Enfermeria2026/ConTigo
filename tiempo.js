@@ -1,4 +1,4 @@
-// tiempo.js - VERSIÓN OFICIAL AEMET (Con puente anti-bloqueos CORS)
+// tiempo.js - VERSIÓN EUROPEA ECMWF (Modelo base de AEMET) + Filtro inteligente
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -7,10 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalScroll = document.getElementById('modal-scroll-tiempo');
     const btnEntendidoScroll = document.getElementById('btn-entendido-scroll');
 
+    // Botón de Volver protegido
     if (btnVolver) {
         btnVolver.onclick = () => window.location.href = 'menu.html';
     }
 
+    // Lógica del Tutorial de Scroll (Deslizar)
     const avisoScrollVisto = localStorage.getItem('avisoTiempoScrollVisto');
     if (!avisoScrollVisto && modalScroll) {
         modalScroll.classList.remove('modal-oculto');
@@ -22,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // --- 2. LÓGICA DE DATOS OFICIALES (AEMET) ---
+    // --- 2. LÓGICA DE DATOS OFICIALES ---
     const usuarioRecuperado = localStorage.getItem('usuarioContigo');
     if (!usuarioRecuperado) { window.location.href = 'index.html'; return; }
     const usuario = JSON.parse(usuarioRecuperado);
@@ -30,123 +32,93 @@ document.addEventListener('DOMContentLoaded', () => {
     const elUbicacion = document.getElementById('titulo-localidad');
     if(elUbicacion) elUbicacion.innerText = usuario.localidad || "Sin localidad";
 
-    let datosAemetGlobal = null; 
-
-    async function cargarDatosAemet() {
+    async function cargarDatos() {
         const contenedor = document.getElementById('contenedor-dias');
-        if(contenedor) contenedor.innerHTML = "<div style='padding:20px; text-align:center; font-weight:bold; color:#2C3E50;'>Conectando con AEMET oficial... ⏳</div>";
+        if(contenedor) contenedor.innerHTML = "<div style='padding:20px; text-align:center; font-weight:bold; color:#2C3E50;'>Conectando con el satélite europeo... ⏳</div>";
 
+        // Ocultamos el botón naranja porque usamos scroll
         const btnCambiar = document.getElementById('btn-cambiar-semana');
         if(btnCambiar) btnCambiar.style.display = 'none';
 
         const estadoTxt = document.getElementById('texto-estado-semana');
-        if(estadoTxt) estadoTxt.innerText = "Cargando previsión...";
+        if(estadoTxt) estadoTxt.innerText = "Previsión de los próximos 7 días";
 
         try {
-            // A. Buscamos el código INE de la localidad
-            const normalizar = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-            const localidadBuscada = normalizar(usuario.localidad);
-
-            const resMuni = await fetch('https://www.el-tiempo.net/api/json/v2/municipios');
-            const listaMunicipios = await resMuni.json();
+            // A. Buscamos coordenadas (Conexión 100% segura y permitida)
+            const resGeo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(usuario.localidad)}&count=1&language=es`);
+            const geo = await resGeo.json();
             
-            const municipioEncontrado = listaMunicipios.find(m => normalizar(m.NOMBRE) === localidadBuscada || normalizar(m.NOMBRE).includes(localidadBuscada));
-
-            if (!municipioEncontrado) {
-                throw new Error("No encontramos el código de: " + usuario.localidad);
+            if (!geo.results || geo.results.length === 0) {
+                throw new Error("Localidad no encontrada");
             }
+            const { latitude, longitude } = geo.results[0];
 
-            const codigoMun = municipioEncontrado.CODIGOINE.substring(0, 5);
+            // B. Pedimos los datos al MODELO EUROPEO (ECMWF) incluyendo "Probabilidad de lluvia"
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,precipitation_probability_max&timezone=Europe/Madrid&models=ecmwf_ifs04`);
+            const data = await res.json();
 
-            // B. Conexión a AEMET a través del puente AllOrigins para evitar el "Failed to fetch" (CORS)
-            const AEMET_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYXJvbGluYXJ0aWVkYTExQGdtYWlsLmNvbSIsImp0aSI6ImE2ZmYxNThmLWRjY2MtNGIzYy1hOTYyLTZhMzU4MTE3NTRmZiIsImV4cCI6MTc5NDk2NDU0MiwiaXNzIjoiQUVNRVQiLCJpYXQiOjE3ODYzMjQ1NDIsInVzZXJJZCI6ImE2ZmYxNThmLWRjY2MtNGIzYy1hOTYyLTZhMzU4MTE3NTRmZiIsInJvbGUiOiIifQ.AaOcuSulR2l_VrjKDv8CM-ArqKKgu3PJtH_fQVF5yAw";
-            const urlAemet = `https://opendata.aemet.es/opendata/api/prediccion/especifica/municipios/diaria/${codigoMun}?api_key=${AEMET_KEY}`;
+            contenedor.innerHTML = "";
             
-            // Usamos AllOrigins como puente
-            const resPred = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(urlAemet)}`);
-            const proxy1 = await resPred.json();
-            const dataPred = JSON.parse(proxy1.contents); // Desempaquetamos los datos de AEMET
+            // Pintamos los primeros 7 días
+            for (let i = 0; i < 7; i++) {
+                const max = Math.round(data.daily.temperature_2m_max[i]);
+                const min = Math.round(data.daily.temperature_2m_min[i]);
+                const viento = Math.round(data.daily.windspeed_10m_max[i]);
+                const probabilidadLluvia = data.daily.precipitation_probability_max[i] || 0;
+                let codigo = data.daily.weathercode[i];
 
-            // Filtros de errores de AEMET
-            if (dataPred.estado === 401) throw new Error("Tu Clave de AEMET ha caducado.");
-            if (dataPred.estado === 429) throw new Error("AEMET saturado. Espera un poco.");
-            if (!dataPred.datos) throw new Error("AEMET no devuelve datos ahora.");
+                // --- EL FILTRO "CARTAGENA" ---
+                // Si el satélite dice lluvia (códigos 50 para arriba) pero la probabilidad real es menor del 30%...
+                // ...corregimos a la máquina y forzamos el icono de "Nublado" (código 3).
+                if (codigo >= 50 && probabilidadLluvia < 30) {
+                    codigo = 3; 
+                }
 
-            // C. Descarga del archivo final también a través del puente AllOrigins
-            const resDatos = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(dataPred.datos)}`);
-            const proxy2 = await resDatos.json();
-            const jsonAemet = JSON.parse(proxy2.contents);
+                // Selección de Iconos tras pasar por el filtro
+                let icono = "☀️";
+                if (codigo === 1 || codigo === 2) icono = "⛅"; 
+                else if (codigo === 3) icono = "☁️"; 
+                else if (codigo >= 45 && codigo <= 48) icono = "🌫️"; // Niebla
+                else if (codigo >= 51 && codigo <= 67) icono = "🌧️"; // Lluvia
+                else if (codigo >= 71 && codigo <= 77) icono = "❄️"; // Nieve
+                else if (codigo >= 80 && codigo <= 82) icono = "🌧️"; // Chubascos
+                else if (codigo >= 95) icono = "⛈️"; // Tormenta
 
-            datosAemetGlobal = jsonAemet[0].prediccion.dia;
-            pintarTarjetas();
+                // Olas de viento
+                let rayas = "〰️";
+                if (viento >= 20 && viento <= 38) rayas = "〰️<br>〰️";
+                else if (viento >= 39) rayas = "〰️<br>〰️<br>〰️";
+
+                // Fechas
+                const fechaObjeto = new Date(data.daily.time[i]);
+                let nombreDia = fechaObjeto.toLocaleDateString('es-ES', {weekday: 'long'});
+                nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
+                const diaNum = String(fechaObjeto.getDate()).padStart(2, '0');
+                const mesNum = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
+                const fechaFormateada = `${diaNum}/${mesNum}`;
+
+                // Construcción de la tarjeta
+                const diaDiv = document.createElement('div');
+                diaDiv.className = 'tarjeta-dia';
+                diaDiv.innerHTML = `
+                    <div class="card-dia">
+                        <span>${nombreDia}</span>
+                        <span class="card-fecha">${fechaFormateada}</span>
+                    </div>
+                    <div class="card-icono">${icono}</div>
+                    <div class="card-viento">${rayas}<br>${viento} km/h</div>
+                    <div class="card-temps">
+                        <span class="temp-max">max: ${max}ºC</span>
+                        <span class="temp-min">min: ${min}ºC</span>
+                    </div>
+                `;
+                contenedor.appendChild(diaDiv);
+            }
 
         } catch(e) {
-            // Si algo falla, lo mostramos claramente
-            if(contenedor) contenedor.innerHTML = `<div style='padding:20px; text-align:center; font-weight:bold; color:#E74C3C;'>Error: ${e.message}</div>`;
+            if(contenedor) contenedor.innerHTML = `<div style='padding:20px; text-align:center; font-weight:bold; color:#E74C3C;'>No se ha podido cargar la previsión. Comprueba tu conexión.</div>`;
         }
     }
 
-    function pintarTarjetas() {
-        if (!datosAemetGlobal) return;
-
-        const contenedor = document.getElementById('contenedor-dias');
-        const estadoTxt = document.getElementById('texto-estado-semana');
-        if(estadoTxt) estadoTxt.innerText = "Previsión de los próximos 7 días";
-        contenedor.innerHTML = "";
-
-        for (let i = 0; i < datosAemetGlobal.length; i++) {
-            const diaAemet = datosAemetGlobal[i];
-
-            const fechaObjeto = new Date(diaAemet.fecha);
-            let nombreDia = fechaObjeto.toLocaleDateString('es-ES', {weekday: 'long'});
-            nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
-            const diaNum = String(fechaObjeto.getDate()).padStart(2, '0');
-            const mesNum = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
-            const fechaFormateada = `${diaNum}/${mesNum}`;
-
-            const max = diaAemet.temperatura.maxima;
-            const min = diaAemet.temperatura.minima;
-
-            let viento = 0;
-            if (diaAemet.viento && diaAemet.viento.length > 0) {
-                viento = Math.max(...diaAemet.viento.map(v => parseInt(v.velocidad || 0)));
-            }
-
-            let estadoCielo = "11"; 
-            if (diaAemet.estadoCielo && diaAemet.estadoCielo.length > 0) {
-                const cieloValido = diaAemet.estadoCielo.find(c => c.value !== "");
-                if(cieloValido) estadoCielo = cieloValido.value;
-            }
-
-            const cod = estadoCielo.replace(/[a-zA-Z]/g, '');
-
-            let icono = "☀️"; 
-            if (["12", "13", "14", "15", "16", "17"].includes(cod)) icono = "⛅"; 
-            else if (["23", "24", "25", "26", "43", "44", "45", "46", "61", "62", "63", "64"].includes(cod)) icono = "🌧️"; 
-            else if (["51", "52", "53", "54"].includes(cod)) icono = "⛈️"; 
-            else if (["71", "72", "73", "74", "33", "34", "35", "36"].includes(cod)) icono = "❄️"; 
-
-            let rayas = "〰️";
-            if (viento >= 20 && viento <= 38) rayas = "〰️<br>〰️";
-            else if (viento >= 39) rayas = "〰️<br>〰️<br>〰️";
-
-            const diaDiv = document.createElement('div');
-            diaDiv.className = 'tarjeta-dia';
-            diaDiv.innerHTML = `
-                <div class="card-dia">
-                    <span>${nombreDia}</span>
-                    <span class="card-fecha">${fechaFormateada}</span>
-                </div>
-                <div class="card-icono">${icono}</div>
-                <div class="card-viento">${rayas}<br>${viento} km/h</div>
-                <div class="card-temps">
-                    <span class="temp-max">max: ${max}ºC</span>
-                    <span class="temp-min">min: ${min}ºC</span>
-                </div>
-            `;
-            contenedor.appendChild(diaDiv);
-        }
-    }
-
-    cargarDatosAemet();
+    cargarDatos();
 });
