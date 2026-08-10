@@ -11,16 +11,17 @@ body {
 
 /* --- CONTENEDOR PRINCIPAL TIPO APP --- */
 .app-container {
-    max-width: 480px;
-    margin: 0 auto;
+    width: 100%;       /* Ocupa el 100% del ancho de la pantalla */
+    max-width: none;   /* Eliminamos cualquier límite de estrechamiento */
+    margin: 0;
     background-color: #F8F9F9 !important;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     box-shadow: none;
-    padding: 0 15px; /* Margen interior único y fijo para toda la pantalla */
+    padding: 0 20px;   /* Margen de seguridad lateral para que los elementos no peguen con los bordes exactos del monitor */
     box-sizing: border-box;
-    overflow-y: scroll; /* Mantiene la barra de scroll siempre visible para evitar saltos de ancho */
+    overflow-y: scroll;
 }
 
 /* --- 1. BLOQUE BLANCO (Volver ajustado + Ubicación amplia) --- */
