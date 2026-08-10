@@ -28,11 +28,12 @@ body {
 .header-blanco {
     display: flex;
     align-items: center;
-    padding: 12px 0; /* Aprovecha el margen unificado del contenedor */
+    padding: 12px 0;
     background: white;
     border-bottom: 2px solid #ddd;
-    gap: 15px;
+    gap: 15px; /* Espacio natural justo entre el botón y la localidad */
     width: 100%;
+    justify-content: flex-start; /* Mantiene ambos elementos alineados a la izquierda */
 }
 
 .btn-volver-app {
@@ -52,10 +53,9 @@ body {
     font-weight: bold;
     color: #2C3E50;
     font-size: 1.15rem;
-    text-align: right;
-    flex: 1;
+    text-align: left; /* Alineado a la izquierda, pegado al botón */
+    flex: unset; /* Eliminamos el espacio expansivo para que no se mueva a la derecha */
 }
-
 /* --- 2. BLOQUE GRIS CLARO (Texto ancho en menos líneas + Botón naranja compacto a la izquierda) --- */
 .caja-control-gris {
     background: #e0e0e0;
