@@ -380,3 +380,11 @@ function iniciarTutorial() {
         }
     };
 }
+
+// --- BOTÓN DE PRENSA ---
+    const btnPrensa = document.getElementById('btn-prensa');
+    if (btnPrensa) {
+        btnPrensa.onclick = () => {
+            window.location.href = 'prensa.html';
+        };
+    }
