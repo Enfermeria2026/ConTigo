@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cargarDatos(viendoProxima);
     }
 
-    async function cargarDatos(proxima) {
+   async function cargarDatos(proxima) {
         const contenedor = document.getElementById('contenedor-dias');
         const estadoTxt = document.getElementById('texto-estado-semana');
         
@@ -64,10 +64,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (viento >= 20 && viento <= 38) rayas = "〰️<br>〰️";
                 else if (viento >= 39) rayas = "〰️<br>〰️<br>〰️";
 
+                // NUEVO: Obtenemos el nombre del día y la fecha formateada (DD/MM)
+                const fechaObjeto = new Date(data.daily.time[i]);
+                let nombreDia = fechaObjeto.toLocaleDateString('es-ES', {weekday: 'long'});
+                nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
+
+                const diaNum = String(fechaObjeto.getDate()).padStart(2, '0');
+                const mesNum = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
+                const fechaFormateada = `${diaNum}/${mesNum}`;
+
                 const dia = document.createElement('div');
                 dia.className = 'tarjeta-dia';
                 dia.innerHTML = `
-                    <div class="card-dia">${new Date(data.daily.time[i]).toLocaleDateString('es-ES', {weekday: 'long'}).charAt(0).toUpperCase() + new Date(data.daily.time[i]).toLocaleDateString('es-ES', {weekday: 'long'}).slice(1)}</div>
+                    <div class="card-dia">
+                        <span>${nombreDia}</span>
+                        <span class="card-fecha">${fechaFormateada}</span>
+                    </div>
                     <div class="card-icono">${icono}</div>
                     <div class="card-viento">${rayas}<br>${viento} km/h</div>
                     <div class="card-temps">
@@ -81,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contenedor.innerHTML = "Error al conectar. Verifica tu conexión.";
         }
     }
-
+    
     // Arrancamos
     cargarDatos(false);
 });
