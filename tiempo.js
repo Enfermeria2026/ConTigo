@@ -1,7 +1,7 @@
-// tiempo.js - Lógica completa para la pantalla de El Tiempo
+// tiempo.js - Lógica completa y detallada de la pantalla de El Tiempo
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Configuración del botón Volver para regresar al menú principal
+    // 1. Configuración del botón Volver para regresar de forma segura al menú principal
     const btnVolver = document.getElementById('btn-volver-tiempo');
     if (btnVolver) {
         btnVolver.onclick = () => {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // 2. Recuperamos los datos del usuario logueado en la aplicación
+    // 2. Recuperamos la información del usuario autenticado desde la memoria local
     const usuarioRecuperado = localStorage.getItem('usuarioContigo');
     if (!usuarioRecuperado) {
         window.location.href = 'index.html';
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     const usuario = JSON.parse(usuarioRecuperado);
 
-    // 3. Verificamos que la localidad esté escrita en el perfil
+    // 3. Comprobamos que el usuario tenga una localidad asignada en su perfil
     const elementoUbicacion = document.getElementById('titulo-localidad');
     if (!usuario.localidad) {
         if (elementoUbicacion) elementoUbicacion.innerText = "Sin localidad 📍";
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let datosMeteorologicos = null;
     let viendoProximaSemana = false;
 
-    // 4. Configuración del botón naranja para alternar semanas
+    // 4. Configuración del botón naranja compacto para alternar entre esta semana y la próxima
     const btnCambiarSemana = document.getElementById('btn-cambiar-semana');
     if (btnCambiarSemana) {
         btnCambiarSemana.onclick = () => {
@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // 5. Descarga de datos meteorológicos mediante la API gratuita Open-Meteo
+    // 5. Descarga de datos meteorológicos mediante la API de Open-Meteo
     try {
-        // A. Obtenemos las coordenadas geográficas de la localidad mediante geocodificación
+        // A. Transformamos el nombre de la localidad en coordenadas de latitud y longitud
         const resGeo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(usuario.localidad)}&count=1&language=es`);
         const datosGeo = await resGeo.json();
 
@@ -52,21 +52,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const { latitude, longitude } = datosGeo.results[0];
 
-        // B. Solicitamos la previsión meteorológica para 14 días (necesaria para esta semana y la próxima)
+        // B. Solicitamos los datos diarios de temperatura, viento y códigos climáticos para 14 días
         const resTiempo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Europe%2FMadrid&forecast_days=14`);
         datosMeteorologicos = await resTiempo.json();
 
-        // C. Renderizamos la semana actual por defecto
+        // C. Dibujamos por defecto la previsión de la semana actual
         pintarPrevision(false);
 
     } catch (error) {
         const contenedor = document.getElementById('contenedor-dias');
         if (contenedor) {
-            contenedor.innerHTML = `<div style="text-align: center; padding: 30px; color: #E74C3C; font-weight: bold;">No se ha podido cargar la previsión del tiempo. Comprueba tu conexión a internet.</div>`;
+            contenedor.innerHTML = `<div style="text-align: center; padding: 30px; color: #E74C3C; font-weight: bold;">No se ha podido cargar la previsión. Comprueba tu conexión a internet.</div>`;
         }
     }
 
-    // 6. Función principal encargada de pintar los 7 días de la semana seleccionada
+    // 6. Función inteligente que dibuja exactamente los 7 días de la semana (Lunes a Domingo)
     function pintarPrevision(esProxima) {
         if (!datosMeteorologicos) return;
 
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         contenedor.innerHTML = "";
 
-        // Actualizamos los textos de control según la semana que se visualiza
+        // Ajustamos los textos informativos según la semana seleccionada
         if (esProxima) {
             textoEstado.innerText = "Estás viendo la previsión de la semana que viene";
             btnCambiar.innerText = "Ver esta semana";
@@ -85,9 +85,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnCambiar.innerText = "Ver siguiente semana";
         }
 
-        // Definimos el rango (0 a 6 para esta semana, 7 a 13 para la próxima)
+        // Determinamos el índice de inicio (0 para esta semana, 7 para la siguiente)
         const inicio = esProxima ? 7 : 0;
-        const fin = inicio + 7;
+        const fin = inicio + 7; // Garantiza exactamente 7 filas (del índice 0 al 6, o 7 al 13, cubriendo siempre hasta el domingo)
 
         for (let i = inicio; i < fin; i++) {
             const fechaStr = datosMeteorologicos.daily.time[i];
@@ -96,12 +96,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const vientoKmh = Math.round(datosMeteorologicos.daily.windspeed_10m_max[i]);
             const codigoClima = datosMeteorologicos.daily.weathercode[i];
 
-            // Obtenemos el nombre del día en castellano con la primera letra en mayúscula
+            // Obtenemos el nombre del día en castellano con formato limpio
             const fechaObjeto = new Date(fechaStr);
             let nombreDia = fechaObjeto.toLocaleDateString('es-ES', { weekday: 'long' });
             nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
 
-            // Asignación de iconos según el código meteorológico oficial
+            // Traducción del código meteorológico a iconos visuales
             let iconoClima = "☀️";
             if (codigoClima >= 1 && codigoClima <= 3) iconoClima = "⛅";
             if (codigoClima >= 45 && codigoClima <= 48) iconoClima = "🌫️";
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (codigoClima >= 71 && codigoClima <= 77) iconoClima = "❄️";
             if (codigoClima >= 95) iconoClima = "⛈️";
 
-            // Generación de las ondas de viento apiladas verticalmente según la velocidad
+            // Generación de las ondas de viento apiladas verticalmente
             let ondasViento = `<span>〰️</span>`;
             if (vientoKmh > 15 && vientoKmh <= 30) {
                 ondasViento = `<span>〰️</span><span>〰️</span>`;
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ondasViento = `<span>〰️</span><span>〰️</span><span>〰️</span>`;
             }
 
-            // Creación de la tarjeta individual en formato de fila única vertical
+            // Construcción física de la tarjeta de la fila
             const tarjeta = document.createElement('div');
             tarjeta.className = 'tarjeta-dia';
 
