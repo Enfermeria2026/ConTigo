@@ -136,7 +136,7 @@ body {
 }
 
 .card-icono {
-    width: 20%; /* Ampliado para que quepan las dos nubes perfectamente */
+    width: 15%; /* Vuelve a ser 15% porque todos son un solo emoji */
     text-align: center;
     font-size: 2.3rem; 
 }
