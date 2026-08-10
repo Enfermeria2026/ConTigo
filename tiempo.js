@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const estadoTxt = document.getElementById('texto-estado-semana');
         
         contenedor.innerHTML = "Cargando...";
-        estadoTxt.innerText = proxima ? "Estás viendo la previsión de la semana que viene" : "Estas viendo la previsión para esta semana";
+        estadoTxt.innerText = proxima ? "Estás viendo la previsión de la semana que viene" : "Estás viendo la previsión para esta semana";
         btnCambiar.innerText = proxima ? "Ver esta semana" : "Ver siguiente semana";
 
         try {
