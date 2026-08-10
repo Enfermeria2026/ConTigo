@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btn-volver-tiempo').onclick = () => window.location.href = 'menu.html';
     
     const usuario = JSON.parse(localStorage.getItem('usuarioContigo'));
-    if (!usuario) return;
     document.getElementById('titulo-localidad').innerText = usuario.localidad;
 
     let viendoProxima = false;
@@ -13,11 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function cargarTiempo(proxima) {
         const contenedor = document.getElementById('contenedor-dias');
-        const estadoTxt = document.getElementById('texto-estado-semana');
-        const btnTxt = document.getElementById('btn-cambiar-semana');
-        
-        estadoTxt.innerText = proxima ? "Estas viendo la previsión de la próxima semana" : "Estas viendo la previsión para esta semana";
-        btnTxt.innerText = proxima ? "Ver esta semana" : "Ver siguiente semana";
         contenedor.innerHTML = "Cargando...";
         
         try {
@@ -34,31 +28,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const viento = Math.round(data.daily.windspeed_10m_max[i]);
                 const codigo = data.daily.weathercode[i];
 
-                // Iconos y viento
+                // Iconos
                 let icono = "☀️";
                 if (codigo >= 1 && codigo <= 3) icono = "⛅";
-                if (codigo >= 45) icono = "🌫️";
-                if (codigo >= 51) icono = "🌧️";
-                if (codigo >= 95) icono = "⛈️";
+                else if (codigo >= 45 && codigo <= 48) icono = "🌫️";
+                else if (codigo >= 51 && codigo <= 67) icono = "🌧️";
+                else if (codigo >= 95) icono = "⛈️";
 
-                let rayasViento = "〰️";
-                if (viento > 15) rayasViento = "〰️〰️";
-                if (viento > 30) rayasViento = "〰️〰️〰️";
+                // Viento apilado (una raya debajo de otra)
+                let rayas = "〰️";
+                if (viento > 15 && viento <= 30) rayas = "〰️<br>〰️";
+                else if (viento > 30) rayas = "〰️<br>〰️<br>〰️";
 
                 const dia = document.createElement('div');
                 dia.className = 'tarjeta-dia';
                 dia.innerHTML = `
-                    <div class="dia-nombre">${new Date(data.daily.time[i]).toLocaleDateString('es-ES', {weekday: 'long'}).charAt(0).toUpperCase() + new Date(data.daily.time[i]).toLocaleDateString('es-ES', {weekday: 'long'}).slice(1)}</div>
-                    <div class="dia-icono">${icono}</div>
-                    <div class="dia-viento">${rayasViento}<br>${viento} km/h</div>
-                    <div class="dia-temps">
-                        <span class="temp-max">max: ${max}º</span><br>
+                    <div class="card-dia">${new Date(data.daily.time[i]).toLocaleDateString('es-ES', {weekday: 'long'}).charAt(0).toUpperCase() + new Date(data.daily.time[i]).toLocaleDateString('es-ES', {weekday: 'long'}).slice(1)}</div>
+                    <div class="card-icono">${icono}</div>
+                    <div class="card-viento">${rayas}<br>${viento} km/h</div>
+                    <div class="card-temps">
+                        <span class="temp-max">max: ${max}º</span>
                         <span class="temp-min">min: ${min}º</span>
                     </div>
                 `;
                 contenedor.appendChild(dia);
             }
-        } catch(e) { contenedor.innerHTML = "Error al cargar datos."; }
+        } catch(e) { contenedor.innerHTML = "Error al cargar la información."; }
     }
     cargarTiempo(false);
 });
