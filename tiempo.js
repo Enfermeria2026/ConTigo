@@ -1,4 +1,4 @@
-// tiempo.js - VERSIÓN OFICIAL AEMET DIRECTA (Sin proxies)
+// tiempo.js - VERSIÓN OFICIAL AEMET (Con puente anti-bloqueos CORS)
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -43,48 +43,45 @@ document.addEventListener('DOMContentLoaded', () => {
         if(estadoTxt) estadoTxt.innerText = "Cargando previsión...";
 
         try {
-            // A. Búsqueda inteligente de la localidad (por si hay variaciones de nombre)
+            // A. Buscamos el código INE de la localidad
             const normalizar = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
             const localidadBuscada = normalizar(usuario.localidad);
 
             const resMuni = await fetch('https://www.el-tiempo.net/api/json/v2/municipios');
             const listaMunicipios = await resMuni.json();
             
-            // Buscamos coincidencia exacta o que contenga el nombre
             const municipioEncontrado = listaMunicipios.find(m => normalizar(m.NOMBRE) === localidadBuscada || normalizar(m.NOMBRE).includes(localidadBuscada));
 
             if (!municipioEncontrado) {
-                throw new Error("No se encuentra el código oficial de: " + usuario.localidad);
+                throw new Error("No encontramos el código de: " + usuario.localidad);
             }
 
             const codigoMun = municipioEncontrado.CODIGOINE.substring(0, 5);
 
-            // B. Conexión a AEMET con tu clave
+            // B. Conexión a AEMET a través del puente AllOrigins para evitar el "Failed to fetch" (CORS)
             const AEMET_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYXJvbGluYXJ0aWVkYTExQGdtYWlsLmNvbSIsImp0aSI6ImE2ZmYxNThmLWRjY2MtNGIzYy1hOTYyLTZhMzU4MTE3NTRmZiIsImV4cCI6MTc5NDk2NDU0MiwiaXNzIjoiQUVNRVQiLCJpYXQiOjE3ODYzMjQ1NDIsInVzZXJJZCI6ImE2ZmYxNThmLWRjY2MtNGIzYy1hOTYyLTZhMzU4MTE3NTRmZiIsInJvbGUiOiIifQ.AaOcuSulR2l_VrjKDv8CM-ArqKKgu3PJtH_fQVF5yAw";
+            const urlAemet = `https://opendata.aemet.es/opendata/api/prediccion/especifica/municipios/diaria/${codigoMun}?api_key=${AEMET_KEY}`;
             
-            const resPred = await fetch(`https://opendata.aemet.es/opendata/api/prediccion/especifica/municipios/diaria/${codigoMun}?api_key=${AEMET_KEY}`);
-            const dataPred = await resPred.json();
+            // Usamos AllOrigins como puente
+            const resPred = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(urlAemet)}`);
+            const proxy1 = await resPred.json();
+            const dataPred = JSON.parse(proxy1.contents); // Desempaquetamos los datos de AEMET
 
-            // C. Filtros de errores reales para avisarte
-            if (dataPred.estado === 401) {
-                throw new Error("Tu API Key de AEMET ha caducado. Tienes que poner una nueva.");
-            }
-            if (dataPred.estado === 429) {
-                throw new Error("AEMET está saturado de peticiones. Inténtalo en un minuto.");
-            }
-            if (!dataPred.datos) {
-                throw new Error("AEMET no está devolviendo los datos en este momento.");
-            }
+            // Filtros de errores de AEMET
+            if (dataPred.estado === 401) throw new Error("Tu Clave de AEMET ha caducado.");
+            if (dataPred.estado === 429) throw new Error("AEMET saturado. Espera un poco.");
+            if (!dataPred.datos) throw new Error("AEMET no devuelve datos ahora.");
 
-            // D. Descarga DIRECTA del archivo del tiempo (sin proxy)
-            const resDatos = await fetch(dataPred.datos);
-            const jsonAemet = await resDatos.json();
+            // C. Descarga del archivo final también a través del puente AllOrigins
+            const resDatos = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(dataPred.datos)}`);
+            const proxy2 = await resDatos.json();
+            const jsonAemet = JSON.parse(proxy2.contents);
 
             datosAemetGlobal = jsonAemet[0].prediccion.dia;
             pintarTarjetas();
 
         } catch(e) {
-            // Ahora la pantalla mostrará EL MOTIVO REAL EXACTO del fallo
+            // Si algo falla, lo mostramos claramente
             if(contenedor) contenedor.innerHTML = `<div style='padding:20px; text-align:center; font-weight:bold; color:#E74C3C;'>Error: ${e.message}</div>`;
         }
     }
