@@ -136,9 +136,9 @@ body {
 }
 
 .card-icono {
-    width: 15%;
+    width: 20%; /* Ampliado para que quepan las dos nubes perfectamente */
     text-align: center;
-    font-size: 2.3rem; /* ICONO DEL SOL/LLUVIA GIGANTE */
+    font-size: 2.3rem; 
 }
 
 .card-viento {
