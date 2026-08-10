@@ -388,3 +388,5 @@ function iniciarTutorial() {
             window.location.href = 'prensa.html';
         };
     }
+
+
