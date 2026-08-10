@@ -1,10 +1,7 @@
-/ tiempo.js - Versión oficial con datos de la Agencia Estatal de Meteorología (AEMET)
+/ tiempo.js - Versión segura y optimizada para evitar bloqueos y asegurar los botones
 
-// Tu clave de API personal de AEMET OpenData
-const AEMET_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYXJvbGluYXJ0aWVkYTExQGdtYWlsLmNvbSIsImp0aSI6ImE2ZmYxNThmLWRjY2MtNGIzYy1hOTYyLTZhMzU4MTE3NTRmZiIsImV4cCI6MTc5NDk2NDU0MiwiaXNzIjoiQUVNRVQiLCJpYXQiOjE3ODYzMjQ1NDIsInVzZXJJZCI6ImE2ZmYxNThmLWRjY2MtNGIzYy1hOTYyLTZhMzU4MTE3NTRmZiIsInJvbGUiOiIifQ.AaOcuSulR2l_VrjKDv8CM-ArqKKgu3PJtH_fQVF5yAw";
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Configuración del botón Volver para regresar al menú principal
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. EL BOTÓN VOLVER FUNCIONA SIEMPRE (Independientemente de que la API falle o cargue)
     const btnVolver = document.getElementById('btn-volver-tiempo');
     if (btnVolver) {
         btnVolver.onclick = () => {
@@ -27,10 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     if (elementoUbicacion) {
-        elementoUbicacion.innerText = `${usuario.localidad} 📍`;
+        elementoUbicacion.innerText = `${usuario.localidad}`;
     }
 
-    let datosPrevisionGlobal = null;
+    let datosMeteorologicosGlobales = null;
     let viendoProximaSemana = false;
 
     // 4. Configuración del botón para alternar entre esta semana y la siguiente
@@ -38,58 +35,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (btnCambiarSemana) {
         btnCambiarSemana.onclick = () => {
             viendoProximaSemana = !viendoProximaSemana;
-            pintarPrevisionAemet(viendoProximaSemana);
+            pintarPrevision(viendoProximaSemana);
         };
     }
 
-    // 5. Descarga de datos oficiales mediante la API de AEMET OpenData
-    try {
-        const contenedor = document.getElementById('contenedor-dias');
-        contenedor.innerHTML = `<div style="text-align: center; padding: 30px; color: #555; font-weight: bold;">Conectando con AEMET oficial... ⏳</div>`;
-
-        // A. Consultamos la lista maestra de municipios de España para localizar el código ID de su pueblo
-        const resMaestro = await fetch(`https://opendata.aemet.es/opendata/api/maestro/municipios?api_key=${AEMET_KEY}`);
-        const dataMaestro = await resMaestro.json();
-        
-        const resUrlMunicipios = await fetch(dataMaestro.datos);
-        const listaMunicipios = await resUrlMunicipios.json();
-
-        // Función para limpiar tildes y mayúsculas en la búsqueda de la localidad
-        const normalizar = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-        const localidadBuscada = normalizar(usuario.localidad);
-
-        const municipioEncontrado = listaMunicipios.find(m => normalizar(m.nombre) === localidadBuscada);
-
-        if (!municipioEncontrado) {
-            throw new Error("Localidad no encontrada en el catálogo de AEMET");
-        }
-
-        // Extraemos el código numérico del municipio (ej: id12021 -> 12021)
-        const codigoMun = municipioEncontrado.id.replace("id", "");
-
-        // B. Solicitamos la predicción diaria específica para ese municipio en AEMET
-        const resPred = await fetch(`https://opendata.aemet.es/opendata/api/prediccion/especifica/municipios/diaria/${codigoMun}?api_key=${AEMET_KEY}`);
-        const dataPred = await resPred.json();
-
-        const resDatosReales = await fetch(dataPred.datos);
-        const jsonDataReal = await resDatosReales.json();
-
-        // Guardamos los días de predicción oficiales
-        datosPrevisionGlobal = jsonDataReal[0].prediccion.dia;
-
-        // Renderizamos la previsión actual
-        pintarPrevisionAemet(false);
-
-    } catch (error) {
+    // 5. Carga de datos meteorológicos optimizada y compatible con navegadores
+    async function iniciarCarga() {
         const contenedor = document.getElementById('contenedor-dias');
         if (contenedor) {
-            contenedor.innerHTML = `<div style="text-align: center; padding: 30px; color: #E74C3C; font-weight: bold;">Error al conectar con AEMET. Revisa que el nombre de tu localidad en el perfil sea exacto.</div>`;
+            contenedor.innerHTML = `<div style="text-align: center; padding: 30px; color: #555; font-weight: bold;">Cargando previsión... ⏳</div>`;
+        }
+
+        try {
+            // A. Obtenemos las coordenadas de la localidad
+            const resGeo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(usuario.localidad)}&count=1&language=es`);
+            const datosGeo = await resGeo.json();
+
+            if (!datosGeo.results || datosGeo.results.length === 0) {
+                throw new Error("Localidad no encontrada");
+            }
+
+            const { latitude, longitude } = datosGeo.results[0];
+
+            // B. Solicitamos la previsión diaria de 14 días
+            const resTiempo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Europe%2FMadrid&forecast_days=14`);
+            datosMeteorologicosGlobales = await resTiempo.json();
+
+            // C. Pintamos la semana actual por defecto
+            pintarPrevision(false);
+
+        } catch (error) {
+            if (contenedor) {
+                contenedor.innerHTML = `<div style="text-align: center; padding: 30px; color: #E74C3C; font-weight: bold;">No se ha podido cargar la previsión. Comprueba que el nombre de tu localidad sea correcto en el perfil.</div>`;
+            }
         }
     }
 
-    // 6. Función inteligente de renderizado adaptada a los datos de la Agencia
-    function pintarPrevisionAemet(esProxima) {
-        if (!datosPrevisionGlobal) return;
+    // 6. Función inteligente encargada de dibujar los 7 días de la semana
+    function pintarPrevision(esProxima) {
+        if (!datosMeteorologicosGlobales) return;
 
         const contenedor = document.getElementById('contenedor-dias');
         const textoEstado = document.getElementById('texto-estado-semana');
@@ -105,46 +89,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             btnCambiar.innerText = "Ver siguiente semana";
         }
 
-        // Definimos los tramos de días según la disponibilidad de la API oficial
-        const inicio = esProxima ? Math.min(3, datosPrevisionGlobal.length) : 0;
-        const fin = Math.min(inicio + 7, datosPrevisionGlobal.length);
+        // Definimos los tramos de días (0-6 para esta semana, 7-13 para la próxima)
+        const inicio = esProxima ? 7 : 0;
+        const fin = inicio + 7;
 
         for (let i = inicio; i < fin; i++) {
-            const diaInfo = datosPrevisionGlobal[i];
-            
-            const fechaObj = new Date(diaInfo.fecha);
-            let nombreDia = fechaObj.toLocaleDateString('es-ES', { weekday: 'long' });
+            const fechaStr = datosMeteorologicosGlobales.daily.time[i];
+            const max = Math.round(datosMeteorologicosGlobales.daily.temperature_2m_max[i]);
+            const min = Math.round(datosMeteorologicos.daily.temperature_2m_min[i]);
+            const vientoKmh = Math.round(datosMeteorologicos.daily.windspeed_10m_max[i]);
+            const codigoClima = datosMeteorologicosGlobales.daily.weathercode[i];
+
+            // Nombre del día en castellano
+            const fechaObjeto = new Date(fechaStr);
+            let nombreDia = fechaObjeto.toLocaleDateString('es-ES', { weekday: 'long' });
             nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
 
-            const max = diaInfo.temperatura.max;
-            const min = diaInfo.temperatura.min;
-
-            // Extraemos la velocidad máxima del viento prevista para el día
-            let vientoKmh = 0;
-            if (diaInfo.viento && diaInfo.viento.length > 0) {
-                vientoKmh = Math.max(...diaInfo.viento.map(v => v.velocidad));
-            }
-
-            // Obtenemos el código de estado del cielo de AEMET
-            let estadoCielo = "11";
-            if (diaInfo.estadoCielo && diaInfo.estadoCielo.length > 0) {
-                estadoCielo = String(diaInfo.estadoCielo[0].value);
-            }
-
-            // Traducción de códigos AEMET a iconos visuales de la app
+            // Iconos climáticos
             let iconoClima = "☀️";
-            if (estadoCielo.includes("12") || estadoCielo.includes("13") || estadoCielo.includes("14") || estadoCielo.includes("15") || estadoCielo.includes("16") || estadoCielo.includes("17")) {
-                iconoClima = "⛅"; // Nublado / Parcial
-            } else if (estadoCielo.includes("23") || estadoCielo.includes("24") || estadoCielo.includes("43") || estadoCielo.includes("44") || estadoCielo.includes("45")) {
-                iconoClima = "🌧️"; // Lluvia
-            } else if (estadoCielo.includes("51") || estadoCielo.includes("52") || estadoCielo.includes("61") || estadoCielo.includes("71")) {
-                iconoClima = "⛈️"; // Tormenta
-            }
+            if (codigoClima >= 1 && codigoClima <= 3) iconoClima = "⛅";
+            if (codigoClima >= 45 && codigoClima <= 48) iconoClima = "🌫️";
+            if (codigoClima >= 51 && codigoClima <= 67) iconoClima = "🌧️";
+            if (codigoClima >= 71 && codigoClima <= 77) iconoClima = "❄️";
+            if (codigoClima >= 95) iconoClima = "⛈️";
 
-            // Aplicación de tus reglas estrictas de viento:
-            // - Suave: menos de 19 km/h (1 raya)
-            // - Medio: de 20 a 38 km/h (2 rayas)
-            // - Fuerte: 39 km/h en adelante (3 rayas)
+            // Reglas de viento estrictas:
+            // - Suave: < 19 km/h (1 raya)
+            // - Medio: 20 - 38 km/h (2 rayas)
+            // - Fuerte: >= 39 km/h (3 rayas)
             let ondasViento = `<span>〰️</span>`;
             if (vientoKmh >= 20 && vientoKmh <= 38) {
                 ondasViento = `<span>〰️</span><br><span>〰️</span>`;
@@ -152,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ondasViento = `<span>〰️</span><br><span>〰️</span><br><span>〰️</span>`;
             }
 
-            // Construcción de la tarjeta física de la fila
+            // Construcción de la tarjeta física
             const tarjeta = document.createElement('div');
             tarjeta.className = 'tarjeta-dia';
 
@@ -172,4 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedor.appendChild(tarjeta);
         }
     }
+
+    // Ejecutamos la carga inicial
+    iniciarCarga();
 });
