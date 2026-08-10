@@ -10,14 +10,27 @@
 </head>
 <body>
 
-    <!-- VENTANA EMERGENTE (MODAL) DE BIENVENIDA Y COOKIES -->
+   <!-- VENTANA EMERGENTE (MODAL) DE BIENVENIDA EN 2 PASOS -->
     <div id="modal-cookies" class="modal-oculto">
         <div class="modal-contenido">
-            <h2>📰 ¡Bienvenido a la sección de Prensa!</h2>
-            <p>Desde aquí podrás leer las noticias de los periódicos más importantes.</p>
-            <p><strong>Aviso importante:</strong> Al pulsar en un periódico, saldrás de la aplicación y entrarás en su página web oficial.</p>
-            <p>Es muy probable que lo primero que veas sea un aviso sobre <strong>"Cookies"</strong>. Es algo normal y seguro. Simplemente debes buscar un botón que diga <strong>"Aceptar cookies"</strong> o <strong>"Aceptar y continuar"</strong> para poder leer las noticias.</p>
-            <button id="btn-entendido-cookies" class="btn-entendido">¡Entendido!</button>
+            
+            <!-- PASO 1: Aviso de Cookies -->
+            <div id="paso-1-prensa">
+                <h2>📰 ¡Bienvenido a Prensa!</h2>
+                <p>Desde aquí podrás leer las noticias de los periódicos más importantes.</p>
+                <p><strong>Aviso:</strong> Al pulsar en un periódico, entrarás en su página oficial.</p>
+                <p>Es muy probable que te pregunten sobre las <strong>"Cookies"</strong>. Busca y pulsa un botón que diga <strong>"Aceptar cookies"</strong> para poder leer sin problemas.</p>
+                <button id="btn-siguiente-prensa" class="btn-entendido">Siguiente paso ➡️</button>
+            </div>
+
+            <!-- PASO 2: Aprender a deslizar (Scroll) -->
+            <div id="paso-2-prensa" class="modal-oculto">
+                <h2>👆 ¿Cómo veo más periódicos?</h2>
+                <p>En esta pantalla hay muchos periódicos y no caben todos a la vez.</p>
+                <p>Para ver los que están escondidos abajo, simplemente <strong>pon tu dedo en el medio de la pantalla y deslízalo hacia arriba</strong> (como si estuvieras empujando una hoja de papel).</p>
+                <button id="btn-entendido-cookies" class="btn-entendido">¡Entendido, a leer!</button>
+            </div>
+
         </div>
     </div>
 
