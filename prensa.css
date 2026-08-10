@@ -69,13 +69,16 @@ body {
     flex-shrink: 0; /* Impide que el aviso se encoja al hacer scroll */
 }
 
-/* --- CONTENEDOR DE PERIÓDICOS --- */
+/* --- CONTENEDOR DE PERIÓDICOS (El único que hace scroll) --- */
 .contenedor-periodicos {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-bottom: 40px; /* Espacio para que el último se vea bien */
+    padding-bottom: 40px;
     width: 100%;
+    flex: 1; /* Ocupa todo el espacio sobrante debajo del aviso */
+    overflow-y: auto; /* ¡ESTA ES LA MAGIA! El scroll ocurre solo aquí dentro */
+    padding-right: 5px; /* Un poco de margen derecho para que la barra de scroll no pise los botones */
 }
 
 /* --- ESTILO BASE DE LA TARJETA DEL PERIÓDICO --- */
