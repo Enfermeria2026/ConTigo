@@ -1,16 +1,16 @@
-/* --- ESTILOS GENERALES Y FONDO DE PANTALLA --- */
+/* --- ESTILOS GENERALES Y FONDO --- */
 body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-color: #D5D8DC; /* Fondo neutro para el ordenador */
+    background-color: #D5D8DC;
     overflow-x: hidden;
 }
 * {
     box-sizing: border-box;
 }
 
-/* --- CONTENEDOR PRINCIPAL TIPO APLICACIÓN MÓVIL --- */
+/* --- CONTENEDOR PRINCIPAL TIPO APP --- */
 .app-container {
     max-width: 480px;
     margin: 0 auto;
@@ -21,102 +21,106 @@ body {
     box-shadow: 0 0 15px rgba(0,0,0,0.15);
 }
 
-/* --- 1. BLOQUE BLANCO (Volver + Ubicación) --- */
+/* --- 1. BLOQUE BLANCO (Volver ajustado + Ubicación amplia) --- */
 .header-blanco {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: white;
-    padding: 15px 20px;
+    padding: 12px 15px;
     border-bottom: 2px solid #E5E8E8;
     width: 100%;
+    gap: 15px;
 }
 .btn-volver-app {
-    background-color: #2ECC71; /* Verde corporativo ConTigo */
+    background-color: #2ECC71;
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 12px;
+    padding: 8px 14px; /* Ajustado al tamaño de la palabra para no ocupar de más */
+    border-radius: 10px;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
+    flex-shrink: 0; /* Impide que el botón se estire */
 }
 .ubicacion-texto {
     font-weight: bold;
     color: #2C3E50;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
+    text-align: right;
+    flex: 1; /* Hace que la localidad aproveche todo el espacio libre de la derecha */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* --- 2. BLOQUE GRIS CLARO (Texto de control + Botón Naranja) --- */
+/* --- 2. BLOQUE GRIS CLARO (Texto ancho en menos líneas + Botón naranja compacto a la izquierda) --- */
 .caja-control-gris {
     background-color: #E5E7E9;
-    padding: 15px;
-    margin: 15px;
+    padding: 12px 15px;
+    margin: 12px 15px;
     border-radius: 15px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    flex-direction: column; /* Coloca el texto arriba y el botón abajo */
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    gap: 10px;
 }
 .caja-control-gris p {
     margin: 0;
     font-size: 0.95rem;
     color: #34495E;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.3;
-    flex: 1;
+    width: 100%; /* Permite que el texto respire a lo ancho, reduciendo las líneas */
 }
 .btn-naranja {
     background-color: #F39C12;
     color: white;
     border: none;
-    padding: 12px 16px;
-    border-radius: 12px;
+    padding: 8px 14px; /* Más pequeño y compacto */
+    border-radius: 10px;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
-    white-space: nowrap;
+    align-self: flex-start; /* Forzado estrictamente a la izquierda */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* --- 3. CONTENEDOR DE TARJETAS (1 Columna, Scroll vertical) --- */
+/* --- 3. CONTENEDOR DE TARJETAS (Con margen inferior extra para ver el domingo) --- */
 .contenedor-dias {
-    padding: 0 15px 25px 15px;
+    padding: 0 15px 40px 15px; /* ¡AQUÍ ESTÁ EL TRUCO! 40px abajo para que el domingo no quede cortado */
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     flex: 1;
 }
 
-/* --- TARJETA INDIVIDUAL DE CADA DÍA (1 Fila) --- */
+/* --- TARJETA INDIVIDUAL DE CADA DÍA --- */
 .tarjeta-dia {
     background: white;
-    border-radius: 15px;
-    padding: 14px 16px;
+    border-radius: 12px;
+    padding: 12px 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     border: 1px solid #E5E8E8;
     width: 100%;
 }
 
-/* Columna de la tarjeta: Día de la semana */
 .card-dia {
     font-weight: bold;
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: #2C3E50;
     width: 25%;
 }
 
-/* Columna de la tarjeta: Icono del tiempo */
 .card-icono {
     width: 15%;
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
 }
 
-/* Columna de la tarjeta: Viento (Rayas verticales apiladas + km/h) */
 .card-viento {
     width: 25%;
     display: flex;
@@ -127,16 +131,16 @@ body {
     color: #7F8C8D;
     font-weight: bold;
 }
+
 .bloque-rayas {
     display: flex;
     flex-direction: column;
     align-items: center;
-    line-height: 0.5; /* Mantiene las ondas de viento muy juntas una debajo de otra */
-    font-size: 0.95rem;
+    line-height: 0.5; /* Ondas de viento muy juntas una debajo de otra */
+    font-size: 0.9rem;
     margin-bottom: 2px;
 }
 
-/* Columna de la tarjeta: Temperaturas (max arriba, min abajo en una sola sección derecha) */
 .card-temps {
     width: 35%;
     display: flex;
@@ -144,12 +148,14 @@ body {
     align-items: flex-end;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     line-height: 1.25;
 }
+
 .temp-max {
     color: #E74C3C;
 }
+
 .temp-min {
     color: #3498DB;
 }
