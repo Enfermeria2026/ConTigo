@@ -7,18 +7,18 @@ body {
     overflow-x: hidden;
 }
 
-/* --- CONTENEDOR PRINCIPAL TIPO APP (Misma base sólida que en el tiempo) --- */
+/* --- CONTENEDOR PRINCIPAL TIPO APP --- */
 .app-container {
     max-width: 480px;
     margin: 0 auto;
     background-color: #F8F9F9 !important;
-    min-height: 100vh;
+    height: 100vh; /* ¡ESTA ES LA CLAVE! Cambiamos min-height por height */
     display: flex;
     flex-direction: column;
     box-shadow: none;
     padding: 0 15px;
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow-y: auto; /* Esto activa el scroll vertical automático */
 }
 
 /* --- CABECERA --- */
