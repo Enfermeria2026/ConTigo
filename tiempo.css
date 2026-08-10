@@ -1,10 +1,9 @@
 /* --- ESTILOS GENERALES Y FONDO --- */
-html, body {
-    height: 100%;
+body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-color: #D5D8DC;
+    background-color: #F8F9F9; /* Igualamos el fondo exterior para que no haya contrastes grises */
     overflow-x: hidden;
 }
 
@@ -13,7 +12,7 @@ html, body {
     max-width: 480px;
     margin: 0 auto;
     background-color: #F8F9F9;
-    min-height: 100%;
+    min-height: 100vh; /* Forzamos que ocupe siempre el 100% real de la pantalla */
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 15px rgba(0,0,0,0.15);
