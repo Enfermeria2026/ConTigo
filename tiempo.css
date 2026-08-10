@@ -17,20 +17,23 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    box-shadow: none; /* Quitamos la sombra para que no dibuje ningún borde extraño */
+    box-shadow: none;
+    padding: 0 15px; /* Margen interior único y fijo para toda la pantalla */
+    box-sizing: border-box;
+    overflow-y: scroll; /* Mantiene la barra de scroll siempre visible para evitar saltos de ancho */
 }
 
 /* --- 1. BLOQUE BLANCO (Volver ajustado + Ubicación amplia) --- */
 .header-blanco {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: white;
-    padding: 12px 15px;
-    border-bottom: 2px solid #E5E8E8;
-    width: 100%;
+    padding: 12px 0; /* Aprovecha el margen unificado del contenedor */
+    background: white;
+    border-bottom: 2px solid #ddd;
     gap: 15px;
+    width: 100%;
 }
+
 .btn-volver-app {
     background-color: #2ECC71;
     color: white;
@@ -54,15 +57,17 @@ body {
 
 /* --- 2. BLOQUE GRIS CLARO (Texto ancho en menos líneas + Botón naranja compacto a la izquierda) --- */
 .caja-control-gris {
-    background-color: #E5E7E9;
+    background: #e0e0e0;
     padding: 12px 15px;
-    margin: 12px 15px;
-    border-radius: 15px;
+    margin: 12px 0; /* Sin márgenes laterales propios, se adapta al 100% del contenedor */
+    border-radius: 10px;
     display: flex;
-    flex-direction: column; /* Coloca el texto arriba y el botón abajo */
-    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
+    width: 100%;
 }
+
 .caja-control-gris p {
     margin: 0;
     font-size: 0.95rem;
@@ -86,24 +91,24 @@ body {
 
 /* --- 3. CONTENEDOR DE TARJETAS (Con margen inferior extra para ver el domingo) --- */
 .contenedor-dias {
-    padding: 0 15px 40px 15px; /* ¡AQUÍ ESTÁ EL TRUCO! 40px abajo para que el domingo no quede cortado */
+    padding: 0 0 40px 0; /* Sin padding lateral extra */
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex: 1;
+    width: 100%;
 }
 
 /* --- TARJETA INDIVIDUAL DE CADA DÍA --- */
-.tarjeta-dia {
-    background: white;
-    border-radius: 12px;
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
+.tarjeta-dia { 
+    background: white; 
+    padding: 12px 15px; 
+    margin: 0; /* Sin márgenes laterales propios */
+    border-radius: 10px; 
+    display: flex; 
+    align-items: center; 
     justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border: 1px solid #E5E8E8;
-    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%; /* Ocupa exactamente el mismo ancho que el cuadro gris y la cabecera */
 }
 
 .card-dia {
