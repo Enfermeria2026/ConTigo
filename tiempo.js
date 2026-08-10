@@ -1,21 +1,15 @@
-// tiempo.js - VERSIÓN OFICIAL AEMET (100% FIABLE)
+// tiempo.js - VERSIÓN OFICIAL AEMET (100% FIABLE Y TODO EN UNA PANTALLA)
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. SEGURIDAD: BOTONES Y TUTORIAL ---
     const btnVolver = document.getElementById('btn-volver-tiempo');
-    const btnCambiar = document.getElementById('btn-cambiar-semana');
     const modalScroll = document.getElementById('modal-scroll-tiempo');
     const btnEntendidoScroll = document.getElementById('btn-entendido-scroll');
 
     // Botón de Volver protegido
     if (btnVolver) {
         btnVolver.onclick = () => window.location.href = 'menu.html';
-    }
-
-    // Botón de cambiar días
-    if (btnCambiar) {
-        btnCambiar.onclick = () => toggleSemana();
     }
 
     // Lógica del Tutorial de Scroll (Deslizar)
@@ -38,20 +32,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const elUbicacion = document.getElementById('titulo-localidad');
     if(elUbicacion) elUbicacion.innerText = usuario.localidad || "Sin localidad";
 
-    let viendoProxima = false;
-    let datosAemetGlobal = null; // Guardamos los datos para no descargar dos veces
-
-    function toggleSemana() {
-        viendoProxima = !viendoProxima;
-        pintarTarjetas(viendoProxima);
-    }
+    let datosAemetGlobal = null; 
 
     async function cargarDatosAemet() {
         const contenedor = document.getElementById('contenedor-dias');
         if(contenedor) contenedor.innerHTML = "<div style='padding:20px; text-align:center; font-weight:bold; color:#2C3E50;'>Conectando con AEMET oficial... ⏳</div>";
 
+        // Ocultamos el botón naranja de "Ver siguientes días" ya que ahora usaremos el scroll
+        const btnCambiar = document.getElementById('btn-cambiar-semana');
+        if(btnCambiar) btnCambiar.style.display = 'none';
+
+        const estadoTxt = document.getElementById('texto-estado-semana');
+        if(estadoTxt) estadoTxt.innerText = "Cargando previsión...";
+
         try {
-            // A. Buscamos el código INE de la localidad en la base abierta de el-tiempo (rápida y sin bloqueos)
+            // A. Buscamos el código INE de la localidad 
             const normalizar = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
             const localidadBuscada = normalizar(usuario.localidad);
 
@@ -61,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!municipioEncontrado) throw new Error("Localidad no encontrada");
 
-            // Extraemos los 5 primeros dígitos (El Código oficial que usa AEMET)
+            // Extraemos los 5 primeros dígitos (Código oficial AEMET)
             const codigoMun = municipioEncontrado.CODIGOINE.substring(0, 5);
 
             // B. Pedimos la URL de los datos usando TU CLAVE DE AEMET
@@ -69,40 +64,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const resPred = await fetch(`https://opendata.aemet.es/opendata/api/prediccion/especifica/municipios/diaria/${codigoMun}?api_key=${AEMET_KEY}`);
             const dataPred = await resPred.json();
 
-            // C. ¡EL TRUCO DE SEGURIDAD! Usamos un "corsproxy" para descargar el archivo y evitar el bloqueo de AEMET
+            // C. Proxy de seguridad
             const resDatos = await fetch(`https://corsproxy.io/?${encodeURIComponent(dataPred.datos)}`);
             const jsonAemet = await resDatos.json();
 
-            // Guardamos los 7 días de predicción
+            // Guardamos la predicción completa
             datosAemetGlobal = jsonAemet[0].prediccion.dia;
-            pintarTarjetas(false);
+            pintarTarjetas();
 
         } catch(e) {
             if(contenedor) contenedor.innerHTML = "<div style='padding:20px; text-align:center; font-weight:bold; color:#E74C3C;'>Error al conectar con AEMET. Revisa que el nombre de tu localidad esté bien escrito en Mi Perfil.</div>";
         }
     }
 
-    function pintarTarjetas(proxima) {
+    function pintarTarjetas() {
         if (!datosAemetGlobal) return;
 
         const contenedor = document.getElementById('contenedor-dias');
         const estadoTxt = document.getElementById('texto-estado-semana');
         
-        // AEMET solo da 7 días, así que dividimos los textos para los primeros 4 días y los 3 últimos
-        if(estadoTxt) estadoTxt.innerText = proxima ? "Previsión de los siguientes días" : "Previsión de los primeros días";
-        const btnCambiar = document.getElementById('btn-cambiar-semana');
-        if(btnCambiar) btnCambiar.innerText = proxima ? "Ver primeros días" : "Ver siguientes días";
+        // Actualizamos el texto de la caja gris
+        if(estadoTxt) estadoTxt.innerText = "Previsión de los próximos 7 días";
 
         contenedor.innerHTML = "";
 
-        // Si es proxima, del día 4 al 6 (o final). Si no, del 0 al 3.
-        const start = proxima ? 4 : 0;
-        const end = proxima ? datosAemetGlobal.length : 4;
-
-        for (let i = start; i < end; i++) {
+        // PINTAMOS TODOS LOS DÍAS DE GOLPE (SIN DIVIDIR)
+        for (let i = 0; i < datosAemetGlobal.length; i++) {
             const diaAemet = datosAemetGlobal[i];
 
-            // 1. Fechas y nombres (DD/MM)
+            // 1. Fechas y nombres
             const fechaObjeto = new Date(diaAemet.fecha);
             let nombreDia = fechaObjeto.toLocaleDateString('es-ES', {weekday: 'long'});
             nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
@@ -110,39 +100,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const mesNum = String(fechaObjeto.getMonth() + 1).padStart(2, '0');
             const fechaFormateada = `${diaNum}/${mesNum}`;
 
-            // 2. Temperaturas (AEMET)
+            // 2. Temperaturas
             const max = diaAemet.temperatura.maxima;
             const min = diaAemet.temperatura.minima;
 
-            // 3. Viento (AEMET - calculamos el pico máximo del día)
+            // 3. Viento
             let viento = 0;
             if (diaAemet.viento && diaAemet.viento.length > 0) {
                 viento = Math.max(...diaAemet.viento.map(v => parseInt(v.velocidad || 0)));
             }
 
-            // 4. Estado del Cielo (AEMET)
+            // 4. Estado del Cielo
             let estadoCielo = "11"; 
             if (diaAemet.estadoCielo && diaAemet.estadoCielo.length > 0) {
-                // Buscamos la primera predicción que no esté vacía
                 const cieloValido = diaAemet.estadoCielo.find(c => c.value !== "");
                 if(cieloValido) estadoCielo = cieloValido.value;
             }
 
-            // Limpiamos las letras que pone AEMET (como la 'n' de noche) para quedarnos con el código exacto
             const cod = estadoCielo.replace(/[a-zA-Z]/g, '');
 
-            let icono = "☀️"; // Despejado por defecto
-            if (["12", "13", "14", "15", "16", "17"].includes(cod)) icono = "⛅"; // Nubes
-            else if (["23", "24", "25", "26", "43", "44", "45", "46", "61", "62", "63", "64"].includes(cod)) icono = "🌧️"; // Lluvias reales
-            else if (["51", "52", "53", "54"].includes(cod)) icono = "⛈️"; // Tormenta
-            else if (["71", "72", "73", "74", "33", "34", "35", "36"].includes(cod)) icono = "❄️"; // Nieve
+            let icono = "☀️"; 
+            if (["12", "13", "14", "15", "16", "17"].includes(cod)) icono = "⛅"; 
+            else if (["23", "24", "25", "26", "43", "44", "45", "46", "61", "62", "63", "64"].includes(cod)) icono = "🌧️"; 
+            else if (["51", "52", "53", "54"].includes(cod)) icono = "⛈️"; 
+            else if (["71", "72", "73", "74", "33", "34", "35", "36"].includes(cod)) icono = "❄️"; 
 
-            // 5. Olas de Viento (Tus reglas: <19, 20-38, 39+)
+            // 5. Olas de Viento
             let rayas = "〰️";
             if (viento >= 20 && viento <= 38) rayas = "〰️<br>〰️";
             else if (viento >= 39) rayas = "〰️<br>〰️<br>〰️";
 
-            // 6. Construcción visual de la tarjeta
+            // 6. Tarjeta
             const diaDiv = document.createElement('div');
             diaDiv.className = 'tarjeta-dia';
             diaDiv.innerHTML = `
@@ -161,6 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Arrancamos la descarga al entrar a la pantalla
+    // Arrancamos
     cargarDatosAemet();
 });
