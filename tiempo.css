@@ -1,38 +1,8 @@
-/* Limpieza total y diseño profesional */
-body { margin: 0; padding: 0; font-family: sans-serif; background-color: #F8F9F9; }
-
-/* Cabecera ordenada */
-.header-tiempo {
-    display: flex; align-items: center; padding: 15px; background: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); gap: 15px;
-}
-.btn-volver-largo {
-    background-color: var(--verde-contigo); color: white; border: none;
-    padding: 12px 25px; border-radius: 12px; font-weight: bold; font-size: 1rem;
-}
-.ubicacion-texto { font-weight: bold; color: #2C3E50; font-size: 1.1rem; }
-
-/* Caja de control gris */
-.caja-control {
-    background-color: #E5E7E9; padding: 15px; margin: 15px;
-    border-radius: 15px; text-align: center;
-}
-.caja-control p { margin: 0 0 10px 0; color: #34495E; font-weight: 500; }
-.btn-cambio-semana {
-    background-color: #F39C12; color: white; border: none;
-    padding: 12px 20px; border-radius: 10px; font-weight: bold; width: 100%;
-}
-
-/* Lista de días (Scroll automático si hace falta) */
-.contenedor-dias { padding: 0 15px 20px 15px; }
-.tarjeta-dia {
-    background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.nombre-dia { font-weight: bold; font-size: 1.1rem; width: 20%; }
-.icono-clima { font-size: 2rem; width: 15%; text-align: center; }
-.info-viento { width: 25%; text-align: center; font-size: 0.9rem; color: #5D6D7E; }
-.info-temps { width: 30%; text-align: right; }
-.temp-max { color: #E74C3C; font-weight: bold; font-size: 1.1rem; }
-.temp-min { color: #3498DB; font-weight: bold; font-size: 1.1rem; }
+body { margin: 0; padding: 0; font-family: sans-serif; background: #f4f4f4; }
+.header-tiempo { display: flex; align-items: center; padding: 10px; background: white; gap: 10px; }
+.btn-volver-largo { background: #1abc9c; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; }
+.ubicacion-texto { font-weight: bold; color: #333; }
+.caja-control { background: #ddd; padding: 15px; text-align: center; margin: 10px; border-radius: 10px; }
+.btn-cambio-semana { background: #e67e22; color: white; border: none; padding: 10px; width: 100%; border-radius: 10px; margin-top: 10px; }
+.contenedor-dias { padding: 10px; }
+.tarjeta-dia { background: white; margin-bottom: 10px; padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
