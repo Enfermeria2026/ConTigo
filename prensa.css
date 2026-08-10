@@ -12,13 +12,13 @@ body {
     max-width: 480px;
     margin: 0 auto;
     background-color: #F8F9F9 !important;
-    height: 100vh; /* ¡ESTA ES LA CLAVE! Cambiamos min-height por height */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     box-shadow: none;
     padding: 0 15px;
     box-sizing: border-box;
-    overflow-y: auto; /* Esto activa el scroll vertical automático */
+    overflow: hidden; /* ¡AQUÍ ESTÁ EL CAMBIO! Bloqueamos el scroll de la pantalla completa */
 }
 
 /* --- CABECERA --- */
@@ -31,6 +31,7 @@ body {
     gap: 15px;
     width: 100%;
     justify-content: flex-start;
+    flex-shrink: 0; /* Impide que la cabecera se encoja */
 }
 
 .btn-volver-app {
@@ -55,8 +56,8 @@ body {
 
 /* --- AVISO DESTACADO (Texto debajo de la cabecera) --- */
 .aviso-destacado {
-    background-color: #FEF9E7; /* Amarillo muy suave */
-    border-left: 5px solid #F1C40F; /* Borde amarillo fuerte */
+    background-color: #FEF9E7;
+    border-left: 5px solid #F1C40F;
     padding: 12px 15px;
     margin: 15px 0;
     border-radius: 8px;
@@ -65,8 +66,8 @@ body {
     line-height: 1.4;
     width: 100%;
     box-sizing: border-box;
+    flex-shrink: 0; /* Impide que el aviso se encoja al hacer scroll */
 }
-.aviso-destacado p { margin: 0; }
 
 /* --- CONTENEDOR DE PERIÓDICOS --- */
 .contenedor-periodicos {
