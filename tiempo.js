@@ -116,7 +116,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (vientoKmh > 30) {
                 ondasViento = `<span>〰️</span><span>〰️</span><span>〰️</span>`;
             }
-
             // Construcción física de la tarjeta de la fila
             const tarjeta = document.createElement('div');
             tarjeta.className = 'tarjeta-dia';
