@@ -4,31 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConTigo - El Tiempo</title>
+    <!-- Tus estilos generales -->
     <link rel="stylesheet" href="style.css">
+    <!-- El diseño específico para esta pantalla -->
     <link rel="stylesheet" href="tiempo.css">
 </head>
 <body>
-    <header class="header-perfil">
-        <button id="btn-volver-tiempo" class="btn-volver">&larr; Volver</button>
-        <h1 style="color: var(--verde-contigo);">El Tiempo</h1>
+
+    <!-- Cabecera con el botón alargado y la ubicación -->
+    <header class="header-tiempo">
+        <button id="btn-volver-tiempo" class="btn-volver-largo">&larr; Volver</button>
+        <div class="ubicacion-texto" id="titulo-localidad">Cargando... 📍</div>
     </header>
 
-    <main class="contenedor-tiempo">
-        <h2 id="titulo-localidad">Cargando... 📍</h2>
-        
-        <div class="control-semanas">
-            <h3 id="texto-semana">Esta Semana</h3>
-            <button id="btn-cambiar-semana" class="btn-semana">Ver Próxima Semana &rarr;</button>
-        </div>
+    <!-- Caja gris con el mensaje y el botón de cambiar semana -->
+    <div class="caja-control">
+        <p id="texto-estado-semana">Estas viendo la previsión para esta semana</p>
+        <button id="btn-cambiar-semana" class="btn-cambio-semana">Ver siguiente semana</button>
+    </div>
 
-        <div id="cargando-tiempo" style="text-align: center; margin-top: 50px; font-size: 1.2rem;">Descargando previsión... ⏳</div>
-
-        <!-- Aquí se dibujarán los 7 días (L-D) mágicamente -->
-        <div id="contenedor-dias" class="grid-dias oculto">
-            <!-- Las tarjetas se generan desde JavaScript -->
+    <!-- Contenedor donde el script dibujará los días -->
+    <main id="contenedor-dias" class="contenedor-dias">
+        <div id="cargando-tiempo" style="text-align: center; margin-top: 50px; font-size: 1.2rem;">
+            Descargando previsión... ⏳
         </div>
     </main>
 
+    <!-- Cargamos el script que da vida a esta pantalla -->
     <script type="module" src="tiempo.js"></script>
 </body>
 </html>
