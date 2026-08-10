@@ -8,17 +8,20 @@
     <link rel="stylesheet" href="tiempo.css">
 </head>
 <body>
-    <header class="header-tiempo">
-        <button id="btn-volver-tiempo" class="btn-volver-largo">← Volver</button>
+
+    <header class="header-blanco">
+        <button id="btn-volver-tiempo" class="btn-volver-app">← Volver</button>
         <div id="titulo-localidad" class="ubicacion-texto">Cargando...</div>
     </header>
 
-    <div class="caja-control">
+    <div class="caja-control-gris">
         <p id="texto-estado-semana">Estas viendo la previsión para esta semana</p>
-        <button id="btn-cambiar-semana" class="btn-cambio-semana">Ver siguiente semana</button>
+        <button id="btn-cambiar-semana" class="btn-naranja">Ver siguiente semana</button>
     </div>
 
-    <main id="contenedor-dias" class="contenedor-dias"></main>
+    <main id="contenedor-dias" class="contenedor-dias">
+        <!-- Aquí se generan las filas -->
+    </main>
 
     <script type="module" src="tiempo.js"></script>
 </body>
