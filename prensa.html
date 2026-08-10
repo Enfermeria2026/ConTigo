@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConTigo - Prensa</title>
+    <!-- Mantenemos el estilo base si lo tienes, pero prensa.css controlará el diseño -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="prensa.css">
+</head>
+<body>
+
+    <!-- VENTANA EMERGENTE (MODAL) DE BIENVENIDA Y COOKIES -->
+    <div id="modal-cookies" class="modal-oculto">
+        <div class="modal-contenido">
+            <h2>📰 ¡Bienvenido a la sección de Prensa!</h2>
+            <p>Desde aquí podrás leer las noticias de los periódicos más importantes.</p>
+            <p><strong>Aviso importante:</strong> Al pulsar en un periódico, saldrás de la aplicación y entrarás en su página web oficial.</p>
+            <p>Es muy probable que lo primero que veas sea un aviso sobre <strong>"Cookies"</strong>. Es algo normal y seguro. Simplemente debes buscar un botón que diga <strong>"Aceptar cookies"</strong> o <strong>"Aceptar y continuar"</strong> para poder leer las noticias.</p>
+            <button id="btn-entendido-cookies" class="btn-entendido">¡Entendido!</button>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL TIPO APP -->
+    <div class="app-container">
+
+        <!-- CABECERA -->
+        <header class="header-blanco">
+            <button id="btn-volver-prensa" class="btn-volver-app">← Volver</button>
+            <div class="titulo-seccion">PRENSA</div>
+        </header>
+
+        <!-- AVISO RESALTADO EN PANTALLA -->
+        <section class="aviso-destacado">
+            <p>💡 <strong>Recuerda:</strong> Al pulsar un botón irás al periódico. Si te preguntan por las <strong>Cookies</strong>, pulsa en "Aceptar cookies" o "Aceptar y continuar" para poder leer.</p>
+        </section>
+
+        <!-- LISTA DE PERIÓDICOS (1 Columna) -->
+        <main class="contenedor-periodicos">
+            
+            <a href="https://www.larazon.es" target="_blank" class="tarjeta-periodico bg-larazon">
+                <span class="icono-periodico">📰</span>
+                <span class="nombre-periodico">La Razón</span>
+            </a>
+
+            <a href="https://elpais.com" target="_blank" class="tarjeta-periodico bg-elpais">
+                <span class="icono-periodico">🗞️</span>
+                <span class="nombre-periodico">El País</span>
+            </a>
+
+            <a href="https://www.elmundo.es" target="_blank" class="tarjeta-periodico bg-elmundo">
+                <span class="icono-periodico">🌍</span>
+                <span class="nombre-periodico">El Mundo</span>
+            </a>
+
+            <a href="https://www.abc.es" target="_blank" class="tarjeta-periodico bg-abc">
+                <span class="icono-periodico">🔤</span>
+                <span class="nombre-periodico">ABC</span>
+            </a>
+
+            <a href="https://www.lavanguardia.com" target="_blank" class="tarjeta-periodico bg-vanguardia">
+                <span class="icono-periodico">🛡️</span>
+                <span class="nombre-periodico">La Vanguardia</span>
+            </a>
+
+            <a href="https://www.eldiario.es" target="_blank" class="tarjeta-periodico bg-eldiario">
+                <span class="icono-periodico">📱</span>
+                <span class="nombre-periodico">elDiario.es</span>
+            </a>
+
+            <a href="https://www.20minutos.es" target="_blank" class="tarjeta-periodico bg-20minutos">
+                <span class="icono-periodico">⏱️</span>
+                <span class="nombre-periodico">20 Minutos</span>
+            </a>
+
+            <a href="https://www.elconfidencial.com" target="_blank" class="tarjeta-periodico bg-confidencial">
+                <span class="icono-periodico">🕵️</span>
+                <span class="nombre-periodico">El Confidencial</span>
+            </a>
+
+            <a href="https://news.google.com" target="_blank" class="tarjeta-periodico bg-googlenews">
+                <span class="icono-periodico">🔍</span>
+                <span class="nombre-periodico">Google News</span>
+            </a>
+
+            <a href="https://www.rtve.es/noticias/" target="_blank" class="tarjeta-periodico bg-rtve">
+                <span class="icono-periodico">📺</span>
+                <span class="nombre-periodico">RTVE Noticias</span>
+            </a>
+
+        </main>
+    </div>
+
+    <script type="module" src="prensa.js"></script>
+</body>
+</html>
