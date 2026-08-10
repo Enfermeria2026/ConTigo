@@ -3,25 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Tiempo</title>
+    <title>ConTigo - El Tiempo</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="tiempo.css">
 </head>
 <body>
 
-    <header class="header-blanco">
-        <button id="btn-volver-tiempo" class="btn-volver-app">← Volver</button>
-        <div id="titulo-localidad" class="ubicacion-texto">Cargando...</div>
-    </header>
+    <!-- Contenedor general que simula la pantalla de la App (Centrado en PC y ajustado en móvil) -->
+    <div class="app-container">
 
-    <div class="caja-control-gris">
-        <p id="texto-estado-semana">Estas viendo la previsión para esta semana</p>
-        <button id="btn-cambiar-semana" class="btn-naranja">Ver siguiente semana</button>
+        <!-- 1. BLOQUE SUPERIOR: Cuadro blanco con el botón de Volver y la Ubicación al lado -->
+        <header class="header-blanco">
+            <button id="btn-volver-tiempo" class="btn-volver-app">← Volver</button>
+            <div id="titulo-localidad" class="ubicacion-texto">Cargando... 📍</div>
+        </header>
+
+        <!-- 2. BLOQUE MEDIO: Cuadro gris claro con el texto de estado y el botón naranja al lado -->
+        <section class="caja-control-gris">
+            <p id="texto-estado-semana">Estás viendo la previsión de esta semana</p>
+            <button id="btn-cambiar-semana" class="btn-naranja">Ver siguiente semana</button>
+        </section>
+
+        <!-- 3. BLOQUE INFERIOR: Lista vertical de tarjetas de los días (1 Columna, 7 Filas) -->
+        <main id="contenedor-dias" class="contenedor-dias">
+            <!-- Las tarjetas se generan de forma dinámica desde JavaScript -->
+            <div style="text-align: center; padding: 40px; color: #7F8C8D; font-size: 1rem;">
+                Descargando previsión... ⏳
+            </div>
+        </main>
+
     </div>
-
-    <main id="contenedor-dias" class="contenedor-dias">
-        <!-- Aquí se generan las filas -->
-    </main>
 
     <script type="module" src="tiempo.js"></script>
 </body>
