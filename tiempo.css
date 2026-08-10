@@ -1,12 +1,12 @@
 /* --- ESTILOS GENERALES Y FONDO --- */
-html, body {
+body {
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #F8F9F9 !important; /* Forzamos el mismo fondo claro aquí */
+    font-family: sans-serif;
+    background-color: #F8F9F9 !important; /* Unificamos el fondo exterior para que sea idéntico */
     overflow-x: hidden;
 }
+
 
 
 /* --- CONTENEDOR PRINCIPAL TIPO APP --- */
@@ -17,7 +17,7 @@ html, body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    box-shadow: none; /* Quitamos la sombra para que no dibuje ningún borde extraño */
 }
 
 /* --- 1. BLOQUE BLANCO (Volver ajustado + Ubicación amplia) --- */
