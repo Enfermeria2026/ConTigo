@@ -74,16 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     codigo = 3; 
                 }
 
-               // Selección de Iconos (Mucho más precisos)
-                let icono = "☀️"; // 0: Soleado por defecto
-                if (codigo === 1) icono = "🌤️"; // Poco nuboso (Sol y pequeña nube)
-                else if (codigo === 2) icono = "⛅"; // Intervalos nubosos (Nube y sol tapado)
-                else if (codigo === 3) icono = "☁️☁️"; // Nuboso (Dos nubes)
+              // Selección de Iconos (1 solo carácter universal)
+                let icono = "☀️"; // 0: Soleado
+                if (codigo === 1) icono = "🌤️"; // Poco nuboso (Sol y nube pequeña)
+                else if (codigo === 2) icono = "⛅"; // Intervalos nubosos (Sol a medias)
+                else if (codigo === 3) icono = "☁️"; // Nuboso / Cubierto (Nube completa tapando todo)
                 else if (codigo >= 45 && codigo <= 48) icono = "🌫️"; // Niebla
-                else if (codigo >= 51 && codigo <= 67) icono = "🌧️"; // Lluvia (Nube con lluvia)
+                else if (codigo >= 51 && codigo <= 67) icono = "🌧️"; // Lluvia
                 else if (codigo >= 71 && codigo <= 77) icono = "❄️"; // Nieve
                 else if (codigo >= 80 && codigo <= 82) icono = "🌧️"; // Chubascos
-                else if (codigo >= 95) icono = "⛈️"; // Tormenta (Lluvia y rayo)
+                else if (codigo >= 95) icono = "⛈️"; // Tormentas
 
                 // Olas de viento (Tus reglas)
                 let rayas = "〰️";
