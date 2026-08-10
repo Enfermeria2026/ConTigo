@@ -1,4 +1,4 @@
-// prensa.js - Lógica para la sección de Prensa y la ventana emergente de cookies
+// prensa.js - Lógica para la sección de Prensa y el mini-tutorial
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -10,29 +10,38 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // 2. Lógica de la ventana emergente (Modal) de Bienvenida / Cookies
+    // 2. Elementos del tutorial de bienvenida
     const modalCookies = document.getElementById('modal-cookies');
+    const paso1 = document.getElementById('paso-1-prensa');
+    const paso2 = document.getElementById('paso-2-prensa');
+    
+    const btnSiguiente = document.getElementById('btn-siguiente-prensa');
     const btnEntendido = document.getElementById('btn-entendido-cookies');
 
-    // Comprobamos en el "localStorage" si ya han aceptado este aviso antes
+    // Comprobamos si es la primera vez que entran
     const avisoAceptado = localStorage.getItem('avisoPrensaCookiesVisto');
 
-    // Si NO lo han aceptado nunca (es su primera vez en la pantalla)
+    // Si es su primera vez, mostramos la ventana principal
     if (!avisoAceptado) {
-        // Quitamos la clase que lo oculta para que se muestre en pantalla
         modalCookies.classList.remove('modal-oculto');
     }
 
-    // Cuando el usuario pulsa en "¡Entendido!"
+    // Al pulsar "Siguiente paso" en el aviso de Cookies (Paso 1)
+    if (btnSiguiente) {
+        btnSiguiente.onclick = () => {
+            paso1.classList.add('modal-oculto');    // Escondemos las cookies
+            paso2.classList.remove('modal-oculto'); // Enseñamos lo de deslizar
+        };
+    }
+
+    // Al pulsar "¡Entendido!" en el aviso de Deslizar (Paso 2)
     if (btnEntendido) {
         btnEntendido.onclick = () => {
-            // Guardamos en la memoria que ya lo han visto para que no vuelva a salir
+            // Guardamos en la memoria que ya lo han visto todo
             localStorage.setItem('avisoPrensaCookiesVisto', 'true');
-            // Ocultamos la ventana emergente
+            // Ocultamos la ventana por completo para siempre
             modalCookies.classList.add('modal-oculto');
         };
     }
 
-    // Nota de accesibilidad: Los enlaces de los periódicos (<a target="_blank">) 
-    // funcionan solos gracias al HTML, no hace falta programarlos aquí en el JS.
 });
