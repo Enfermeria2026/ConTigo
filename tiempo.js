@@ -109,13 +109,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (codigoClima >= 71 && codigoClima <= 77) iconoClima = "❄️";
             if (codigoClima >= 95) iconoClima = "⛈️";
 
-            // Generación de las ondas de viento apiladas verticalmente
-            let ondasViento = `<span>〰️</span>`;
-            if (vientoKmh > 15 && vientoKmh <= 30) {
-                ondasViento = `<span>〰️</span><span>〰️</span>`;
-            } else if (vientoKmh > 30) {
-                ondasViento = `<span>〰️</span><span>〰️</span><span>〰️</span>`;
+            // Generación de las ondas de viento apiladas verticalmente según los rangos pedidos
+            let ondasViento = `<span>〰️</span>`; // Suave (< 19 km/h)
+            if (vientoKmh >= 20 && vientoKmh <= 38) {
+                ondasViento = `<span>〰️</span><br><span>〰️</span>`; // Medio (20 - 38 km/h)
+            } else if (vientoKmh >= 39) {
+                ondasViento = `<span>〰️</span><br><span>〰️</span><br><span>〰️</span>`; // Fuerte (39+ km/h)
             }
+            
             // Construcción física de la tarjeta de la fila
             const tarjeta = document.createElement('div');
             tarjeta.className = 'tarjeta-dia';
