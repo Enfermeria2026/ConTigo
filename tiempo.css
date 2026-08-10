@@ -7,21 +7,19 @@ body {
     overflow-x: hidden;
 }
 
-
-
 /* --- CONTENEDOR PRINCIPAL TIPO APP --- */
 .app-container {
-    width: 100%;       /* Ocupa el 100% del ancho de la pantalla */
-    max-width: none;   /* Eliminamos cualquier límite de estrechamiento */
+    width: 100%;       
+    max-width: none;   
     margin: 0;
     background-color: #F8F9F9 !important;
-    min-height: 100vh;
+    height: 100vh; /* CAMBIO: Altura fija obligatoria */
     display: flex;
     flex-direction: column;
     box-shadow: none;
-    padding: 0 20px;   /* Margen de seguridad lateral para que los elementos no peguen con los bordes exactos del monitor */
+    padding: 0 20px;   
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow: hidden; /* CAMBIO: Bloqueamos el scroll general */
 }
 
 /* --- 1. BLOQUE BLANCO (Volver ajustado + Ubicación amplia) --- */
@@ -31,9 +29,10 @@ body {
     padding: 12px 0;
     background: white;
     border-bottom: 2px solid #ddd;
-    gap: 15px; /* Espacio natural justo entre el botón y la localidad */
+    gap: 15px; 
     width: 100%;
-    justify-content: flex-start; /* Mantiene ambos elementos alineados a la izquierda */
+    justify-content: flex-start; 
+    flex-shrink: 0; /* IMPIDE QUE SE ENCOJA */
 }
 
 .btn-volver-app {
@@ -60,13 +59,14 @@ body {
 .caja-control-gris {
     background: #e0e0e0;
     padding: 12px 15px;
-    margin: 12px 0; /* Sin márgenes laterales propios, se adapta al 100% del contenedor */
+    margin: 12px 0; 
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
     width: 100%;
+    flex-shrink: 0; /* IMPIDE QUE SE ENCOJA */
 }
 
 .caja-control-gris p {
@@ -90,58 +90,64 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* --- 3. CONTENEDOR DE TARJETAS (Con margen inferior extra para ver el domingo) --- */
+/* --- 3. CONTENEDOR DE TARJETAS (El único que hace scroll) --- */
 .contenedor-dias {
-    padding: 0 0 40px 0; /* Sin padding lateral extra */
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px; /* Más separación entre tarjetas */
     width: 100%;
+    flex: 1; /* Ocupa todo el espacio libre de abajo */
+    overflow-y: auto; /* AQUÍ OCURRE EL SCROLL */
+    padding-bottom: 40px;
+    padding-right: 5px; /* Margen para la barra */
 }
 
 /* --- TARJETA INDIVIDUAL DE CADA DÍA --- */
 .tarjeta-dia { 
     background: white; 
-    padding: 12px 15px; 
-    margin: 0; /* Sin márgenes laterales propios */
-    border-radius: 10px; 
+    padding: 20px 15px; /* MÁS ALTAS Y ESPACIOSAS */
+    margin: 0; 
+    border-radius: 12px; 
     display: flex; 
     align-items: center; 
     justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    width: 100%; /* Ocupa exactamente el mismo ancho que el cuadro gris y la cabecera */
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    width: 100%; 
+}
+.tarjeta-dia:last-child {
+    margin-bottom: 80px; /* TRUCO: Para que el domingo no se corte nunca */
 }
 
 .card-dia {
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 1.25rem; /* LETRA MÁS GRANDE */
     color: #2C3E50;
-    width: 25%;
+    width: 28%;
     display: flex;
-    flex-direction: column; /* Coloca el nombre del día arriba y la fecha abajo */
+    flex-direction: column; 
     line-height: 1.2;
 }
 
 .card-fecha {
-    font-size: 0.78rem;
-    color: #7F8C8D; /* Un gris suave y elegante para la fecha */
+    font-size: 0.95rem; /* FECHA MÁS GRANDE */
+    color: #7F8C8D; 
     font-weight: normal;
-    margin-top: 2px;
+    margin-top: 4px; /* MÁS SEPARACIÓN */
 }
 
 .card-icono {
     width: 15%;
     text-align: center;
-    font-size: 1.6rem;
+    font-size: 2.3rem; /* ICONO DEL SOL/LLUVIA GIGANTE */
 }
 
 .card-viento {
-    width: 25%;
+    width: 22%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.9rem; /* LETRA VIENTO MÁS GRANDE */
     color: #7F8C8D;
     font-weight: bold;
 }
@@ -150,9 +156,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    line-height: 0.5; /* Ondas de viento muy juntas una debajo de otra */
-    font-size: 0.9rem;
-    margin-bottom: 2px;
+    line-height: 0.6; 
+    font-size: 1.1rem; /* RAYAS MÁS GRANDES */
+    margin-bottom: 4px;
 }
 
 .card-temps {
@@ -162,8 +168,8 @@ body {
     align-items: flex-end;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.85rem;
-    line-height: 1.25;
+    font-size: 1.05rem; /* TEMPERATURAS MÁS GRANDES */
+    line-height: 1.3;
 }
 
 .temp-max {
@@ -172,4 +178,28 @@ body {
 
 .temp-min {
     color: #3498DB;
+}
+
+/* --- VENTANA EMERGENTE (MODAL TUTORIAL) --- */
+.modal-oculto { display: none !important; }
+
+#modal-scroll-tiempo {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.75); display: flex;
+    align-items: center; justify-content: center; z-index: 1000;
+    padding: 20px; box-sizing: border-box;
+}
+
+.modal-contenido {
+    background-color: white; padding: 25px; border-radius: 15px;
+    max-width: 400px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-contenido h2 { margin-top: 0; color: #2C3E50; font-size: 1.4rem; }
+
+.modal-contenido p { color: #34495E; font-size: 1.05rem; line-height: 1.4; text-align: left; margin-bottom: 15px; }
+
+.btn-entendido {
+    background-color: #2ECC71; color: white; border: none; padding: 12px 25px; 
+    border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer; width: 100%; margin-top: 10px;
 }
