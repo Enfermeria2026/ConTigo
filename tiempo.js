@@ -1,6 +1,24 @@
 // tiempo.js - Versión separada para asegurar que los botones siempre respondan
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- NUEVO: LÓGICA DEL TUTORIAL DE SCROLL ---
+    const modalScroll = document.getElementById('modal-scroll-tiempo');
+    const btnEntendidoScroll = document.getElementById('btn-entendido-scroll');
+    const avisoScrollVisto = localStorage.getItem('avisoTiempoScrollVisto');
+
+    // Si es la primera vez, mostramos la ventana
+    if (!avisoScrollVisto && modalScroll) {
+        modalScroll.classList.remove('modal-oculto');
+    }
+
+    // Al pulsar "¡Entendido!"
+    if (btnEntendidoScroll && modalScroll) {
+        btnEntendidoScroll.onclick = () => {
+            localStorage.setItem('avisoTiempoScrollVisto', 'true'); // Guardamos que ya lo ha visto
+            modalScroll.classList.add('modal-oculto'); // Ocultamos la ventana
+        };
+    }
     
     // --- 1. SEGURIDAD: BOTONES (Configurados lo primero, pase lo que pase) ---
     const btnVolver = document.getElementById('btn-volver-tiempo');
