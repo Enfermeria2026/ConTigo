@@ -49,22 +49,24 @@ document.addEventListener('DOMContentLoaded', () => {
         cargarDatos(viendoProxima);
     }
 
-   async function cargarDatos(proxima) {
+  async function cargarDatos(proxima) {
         const contenedor = document.getElementById('contenedor-dias');
         const estadoTxt = document.getElementById('texto-estado-semana');
+        const btnCambiar = document.getElementById('btn-cambiar-semana');
         
         contenedor.innerHTML = "Cargando...";
-        estadoTxt.innerText = proxima ? "Estás viendo la previsión de la semana que viene" : "Estás viendo la previsión para esta semana";
-        btnCambiar.innerText = proxima ? "Ver esta semana" : "Ver siguiente semana";
+        if(estadoTxt) estadoTxt.innerText = proxima ? "Estás viendo la previsión de la semana que viene" : "Estas viendo la previsión para esta semana";
+        if(btnCambiar) btnCambiar.innerText = proxima ? "Ver esta semana" : "Ver siguiente semana";
 
         try {
-            // Buscamos coordenadas (Open-Meteo)
+            // 1. Buscamos coordenadas de la localidad
             const resGeo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(usuario.localidad)}&count=1&language=es`);
             const geo = await resGeo.json();
             const { latitude, longitude } = geo.results[0];
 
-            // Pedimos el tiempo
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Europe/Madrid&forecast_days=14`);
+            // 2. ¡EL TRUCO ESTÁ AQUÍ! Añadimos "&models=best_match"
+            // Esto fuerza a usar el Modelo Europeo (ECMWF) y los modelos locales de alta resolución (como AEMET Harmonie).
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=Europe/Madrid&models=best_match&forecast_days=14`);
             const data = await res.json();
 
             contenedor.innerHTML = "";
@@ -76,13 +78,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const viento = Math.round(data.daily.windspeed_10m_max[i]);
                 const codigo = data.daily.weathercode[i];
 
-                let icono = (codigo >= 95) ? "⛈️" : (codigo >= 51) ? "🌧️" : (codigo >= 45) ? "🌫️" : (codigo >= 1 && codigo <= 3) ? "⛅" : "☀️";
+                // 3. NUEVA CALIBRACIÓN DE ICONOS (Estilo AEMET)
+                let icono = "☀️";
+                if (codigo === 1 || codigo === 2) icono = "⛅"; // Parcialmente nublado
+                else if (codigo === 3) icono = "☁️"; // Muy nublado
+                else if (codigo >= 45 && codigo <= 48) icono = "🌫️"; // Niebla
+                else if (codigo >= 51 && codigo <= 55) icono = "☁️"; // Humedad/Llovizna invisible -> AEMET lo dibuja como nube
+                else if (codigo >= 61 && codigo <= 67) icono = "🌧️"; // Lluvia real
+                else if (codigo >= 71 && codigo <= 77) icono = "❄️"; // Nieve
+                else if (codigo >= 80 && codigo <= 82) icono = "🌧️"; // Chubascos fuertes
+                else if (codigo >= 95) icono = "⛈️"; // Tormenta
                 
                 let rayas = "〰️";
                 if (viento >= 20 && viento <= 38) rayas = "〰️<br>〰️";
                 else if (viento >= 39) rayas = "〰️<br>〰️<br>〰️";
 
-                // NUEVO: Obtenemos el nombre del día y la fecha formateada (DD/MM)
                 const fechaObjeto = new Date(data.daily.time[i]);
                 let nombreDia = fechaObjeto.toLocaleDateString('es-ES', {weekday: 'long'});
                 nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
